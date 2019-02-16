@@ -1,0 +1,3 @@
+[submodule "swqa"]
+	path = swqa
+	url = git@github.com:brandonbraun653/SWQA.git
