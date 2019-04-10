@@ -1,0 +1,36 @@
+import feature ;
+
+# ------------------------------------------
+# All supported microcontroller families. This is the highest possible
+# description level of an STM32 series microcontroller.
+# ------------------------------------------
+feature.feature ThorFamily
+    :   STM32Fx     # The default error family
+        STM32F4
+        STM32F7
+    :   propagated optional 
+    ;
+
+# ------------------------------------------
+# All supported family specific chip types. This is the middle tier
+# description of an STM32 series microcontroller.
+# ------------------------------------------
+feature.feature ThorChip 
+    :   STM32Fxxx   # The default error chip
+        STM32F4xx
+        STM32F446
+        STM32F7xx
+        STM32F767 
+    :   propagated optional 
+    ;
+
+# ------------------------------------------
+# All supported chip variant post-fixes. This is the lowest possible
+# description of an STM32 series microcontroller.
+# ------------------------------------------
+feature.feature ThorVariant
+    :   xx  # The default error variant
+        RE
+        ZI
+    :   propagated optional
+    ;

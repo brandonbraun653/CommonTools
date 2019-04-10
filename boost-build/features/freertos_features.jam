@@ -1,0 +1,25 @@
+import feature ;
+
+# ------------------------------------------
+# These features are dual maintained against the FreeRTOS build.jam file
+# in this repo: https://github.com/brandonbraun653/FreeRTOS
+# ------------------------------------------
+feature.feature FreeRTOS : disabled enabled : optional propagated ;
+
+feature.feature FreeRTOSMem
+    :   unknown
+        heap1
+        heap2
+        heap3
+        heap4 
+        heap5
+    :   propagated optional
+    ;
+
+feature.feature FreeRTOSPort
+    :   unknown
+        CortexM
+        Windows
+        Posix
+    :   propagated optional
+    ;
