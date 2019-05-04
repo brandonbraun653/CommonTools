@@ -1,0 +1,33 @@
+
+path-constant gtest_include_directory : googletest/googletest/include ;
+path-constant gmock_include_directory : googletest/googlemock/include ;
+
+
+local gtest_root_dir = googletest/googletest ;
+local gmock_root_dir = googletest/googlemock ;
+
+local gtest_src_dir = googletest/googletest/src ;
+local gmock_src_dir = googletest/googlemock/src ;
+
+lib gtest
+    :   $(gtest_src_dir)/gtest-all.cc
+    
+    :   <include>$(gtest_include_directory)
+        <include>$(gtest_root_dir)
+    ;
+
+explicit gtest ;
+
+
+lib gmock 
+    :   $(gmock_src_dir)/gmock-all.cc
+
+    :   <include>$(gmock_include_directory)
+        <include>$(gtest_include_directory)
+        <include>$(gmock_root_dir)
+    ;
+explicit gmock ;
+
+
+explicit_alias gtest_core : gtest ;
+explicit_alias gmock_core : gmock ;
