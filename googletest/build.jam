@@ -29,5 +29,5 @@ lib gmock
 explicit gmock ;
 
 
-explicit_alias gtest_core : gtest ;
-explicit_alias gmock_core : gmock ;
+explicit_alias gtest_core : gtest : : : <include>$(gtest_include_directory) ;
+explicit_alias gmock_core : gmock : : : <include>$(gtest_include_directory) <include>$(gmock_include_directory) ;
