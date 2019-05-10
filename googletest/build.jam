@@ -15,7 +15,10 @@ lib gtest
     :   <include>$(gtest_include_directory)
         <include>$(gtest_root_dir)
     :
-    :   <linkflags>"-lpthread"
+        # -lpthread is for linux
+        # -static-xxxx is needed so Windows won't link to a C++ STD .dll that may or
+        # may not be on the host system.
+    :   <linkflags>"-lpthread -static-libgcc -static-libstdc++"
     ;
 
 explicit gtest ;
