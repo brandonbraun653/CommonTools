@@ -1,10 +1,9 @@
 import feature ;
 
-# ------------------------------------------
-# These features are dual maintained against the FreeRTOS build.jam file
-# in this repo: https://github.com/brandonbraun653/FreeRTOS
-# ------------------------------------------
-feature.feature FreeRTOS : disabled enabled : optional propagated ;
+feature.feature FreeRTOS 
+    :   disabled 
+        enabled 
+    :   propagated optional ;
 
 feature.feature FreeRTOSMem
     :   unknown
