@@ -13,7 +13,7 @@ import feature ;
 # ------------------------------------------
 # Enable or disable coverage generation functionality 
 # ------------------------------------------
-feature.feature coverage 
+feature.feature cov 
     :   disabled 
         enabled 
     :   propagated optional 
