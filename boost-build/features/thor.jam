@@ -1,13 +1,33 @@
+# ===================================================================
+# Thor Features:
+#   Defines commonly used features that configure the Thor source
+#   build behavior. In order to use these features, a target must have
+#   the <Thor>enabled flag set somewhere.
+#
+#   See how to invoke the subfeatures here:
+#       https://boostorg.github.io/build/manual/develop/index.html#bbv2.reference.definitions
+# ===================================================================
+
 import feature ;
+
+# ------------------------------------------
+# Decides whether or not the Thore features 
+# and functionality will be enabled or disabled. 
+# ------------------------------------------
+feature.feature Thor 
+    :   disabled 
+        enabled 
+    :   propagated optional 
+    ;
 
 # ------------------------------------------
 # All supported microcontroller families. This is the highest possible
 # description level of an STM32 series microcontroller.
 # ------------------------------------------
-feature.feature ThorFamily
-    :   STM32Fx     # The default error family
-        STM32F4
-        STM32F7
+feature.subfeature Thor : family
+    :   Fx     # The default error family
+        F4
+        F7
     :   propagated optional 
     ;
 
@@ -15,12 +35,12 @@ feature.feature ThorFamily
 # All supported family specific chip types. This is the middle tier
 # description of an STM32 series microcontroller.
 # ------------------------------------------
-feature.feature ThorChip 
-    :   STM32Fxxx   # The default error chip
-        STM32F4xx
-        STM32F446
-        STM32F7xx
-        STM32F767 
+feature.subfeature Thor : chip 
+    :   Fxxx    # The default error chip
+        F4xx    # A generic STM32F4
+        F446
+        F7xx    # A generic STM32F7
+        F767 
     :   propagated optional 
     ;
 
@@ -28,7 +48,7 @@ feature.feature ThorChip
 # All supported chip variant post-fixes. This is the lowest possible
 # description of an STM32 series microcontroller.
 # ------------------------------------------
-feature.feature ThorVariant
+feature.subfeature Thor : variant
     :   xx  # The default error variant
         RE
         ZI
