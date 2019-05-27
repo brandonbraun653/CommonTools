@@ -1,0 +1,20 @@
+# ===================================================================
+# Coverage Features:
+#   Defines commonly used features that configure the coverage source
+#   build behavior. In order to use these features, a target must have
+#   the <coverage>enabled flag set somewhere.
+#
+#   See how to invoke the subfeatures here:
+#       https://boostorg.github.io/build/manual/develop/index.html#bbv2.reference.definitions
+# ===================================================================
+
+import feature ;
+
+# ------------------------------------------
+# Enable or disable coverage generation functionality 
+# ------------------------------------------
+feature.feature coverage 
+    :   disabled 
+        enabled 
+    :   propagated optional 
+    ;
