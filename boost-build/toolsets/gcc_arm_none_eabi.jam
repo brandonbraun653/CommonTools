@@ -704,6 +704,17 @@ class gcc_arm_none_eabi-linking-generator : unix-linking-generator
     }
 }
 
+generators.register
+  [ new gcc_arm_none_eabi-linking-generator gcc_arm_none_eabi.link
+      : LIB OBJ
+      : EXE
+      : <toolset>gcc_arm_none_eabi ] ;
+      
+generators.register
+  [ new gcc_arm_none_eabi-linking-generator gcc_arm_none_eabi.link.dll
+      : LIB OBJ
+      : SHARED_LIB
+      : <toolset>gcc_arm_none_eabi ] ;
 
 # Declare flags for linking.
 # First, the common flags.
