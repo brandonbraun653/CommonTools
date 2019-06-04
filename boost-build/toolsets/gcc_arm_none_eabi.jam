@@ -704,17 +704,21 @@ class gcc_arm_none_eabi-linking-generator : unix-linking-generator
     }
 }
 
-generators.register
-  [ new gcc_arm_none_eabi-linking-generator gcc_arm_none_eabi.link
+local g ;
+g = [ new gcc_arm_none_eabi-linking-generator gcc_arm_none_eabi.link
       : LIB OBJ
       : EXE
       : <toolset>gcc_arm_none_eabi ] ;
+$(g).set-rule-name gcc_arm_none_eabi.link ;
+generators.register $(g) ;
       
-generators.register
-  [ new gcc_arm_none_eabi-linking-generator gcc_arm_none_eabi.link.dll
+
+g = [ new gcc_arm_none_eabi-linking-generator gcc_arm_none_eabi.link.dll
       : LIB OBJ
       : SHARED_LIB
       : <toolset>gcc_arm_none_eabi ] ;
+$(g).set-rule-name gcc_arm_none_eabi.link.dll ;
+generators.register $(g) ;
 
 # Declare flags for linking.
 # First, the common flags.
@@ -725,7 +729,6 @@ toolset.flags gcc_arm_none_eabi.link LINKPATH <library-path> ;
 toolset.flags gcc_arm_none_eabi.link FINDLIBS-ST <find-static-library> ;
 toolset.flags gcc_arm_none_eabi.link FINDLIBS-SA <find-shared-library> ;
 toolset.flags gcc_arm_none_eabi.link LIBRARIES <library-file> ;
-toolset.flags gcc_arm_none_eabi.link START-GROUP -Wl,--start-group ;
 
 # Enclose the RPATH variable on 'targets' in double quotes, unless it is already
 # enclosed in single quotes. This special casing is done because it is common to
@@ -756,7 +759,7 @@ rule link ( targets * : sources * : properties * )
 
 actions link bind LIBRARIES
 {
-    "$(CONFIG_COMMAND)" -L"$(LINKPATH)" -Wl,$(RPATH_OPTION:E=-R)$(SPACE)-Wl,$(RPATH) -Wl,-rpath-link$(SPACE)-Wl,"$(RPATH_LINK)" -o -Wl,--start-group "$(<)" $(START-GROUP) "$(>)" "$(LIBRARIES)" $(END-GROUP) $(FINDLIBS-ST-PFX) -l$(FINDLIBS-ST) $(FINDLIBS-SA-PFX) -l$(FINDLIBS-SA) $(END-GROUP) $(OPTIONS) $(USER_OPTIONS)
+    "$(CONFIG_COMMAND)" -L"$(LINKPATH)" -Wl,$(RPATH_OPTION:E=-R)$(SPACE)-Wl,$(RPATH) -Wl,-rpath-link$(SPACE)-Wl,"$(RPATH_LINK)" -o "$(<)" $(START-GROUP) "$(>)" "$(LIBRARIES)" $(FINDLIBS-ST-PFX) -l$(FINDLIBS-ST) $(FINDLIBS-SA-PFX) -l$(FINDLIBS-SA) $(END-GROUP) $(OPTIONS) $(USER_OPTIONS)
 }
 
 rule link.dll ( targets * : sources * : properties * )
@@ -769,7 +772,7 @@ rule link.dll ( targets * : sources * : properties * )
 # Differs from 'link' above only by -shared.
 actions link.dll bind LIBRARIES
 {
-    "$(CONFIG_COMMAND)" -L"$(LINKPATH)" -Wl,$(RPATH_OPTION:E=-R)$(SPACE)-Wl,$(RPATH) "$(.IMPLIB-COMMAND)$(<[1])" -o -Wl,--start-group "$(<[-1])" $(HAVE_SONAME)-Wl,$(SONAME_OPTION)$(SPACE)-Wl,$(<[-1]:D=) -shared $(START-GROUP) "$(>)" "$(LIBRARIES)"  $(END-GROUP) $(FINDLIBS-ST-PFX) -l$(FINDLIBS-ST) $(FINDLIBS-SA-PFX) -l$(FINDLIBS-SA) $(END-GROUP) $(OPTIONS) $(USER_OPTIONS)
+    "$(CONFIG_COMMAND)" -L"$(LINKPATH)" -Wl,$(RPATH_OPTION:E=-R)$(SPACE)-Wl,$(RPATH) "$(.IMPLIB-COMMAND)$(<[1])" -o "$(<[-1])" $(HAVE_SONAME)-Wl,$(SONAME_OPTION)$(SPACE)-Wl,$(<[-1]:D=) -shared $(START-GROUP) "$(>)" "$(LIBRARIES)" $(FINDLIBS-ST-PFX) -l$(FINDLIBS-ST) $(FINDLIBS-SA-PFX) -l$(FINDLIBS-SA) $(END-GROUP) $(OPTIONS) $(USER_OPTIONS)
 }
 
 ###
