@@ -28,6 +28,7 @@ feature.subfeature Thor : family
     :   Fx     # The default error family
         F4
         F7
+        H7
     :   propagated optional 
     ;
 
@@ -40,7 +41,9 @@ feature.subfeature Thor : chip
         F4xx    # A generic STM32F4
         F446
         F7xx    # A generic STM32F7
-        F767 
+        F767
+        H7xx    # A generic STM32H7
+        H743
     :   propagated optional 
     ;
 
