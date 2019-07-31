@@ -1,0 +1,18 @@
+import toolset ;
+
+# -----------------------------------------------
+# When added as a target requirement, injects compiler and
+# linker flags to the build command so that symbols used in
+# the coverage profiling operation are generated.
+#
+# Intended for use with gcovr, so only GCC can be used.
+# -----------------------------------------------
+alias FLAGS 
+  :
+  : <cov>enabled
+    <toolset>gcc
+  :
+  : <cxxflags>"-fprofile-arcs -ftest-coverage -fPIC"
+    <linkflags>"-lgcov"
+  ;
+
