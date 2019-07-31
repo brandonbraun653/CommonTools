@@ -24,7 +24,7 @@ lib gtest
         # -lpthread is for linux
         # -static-xxxx is needed so Windows won't link to a C++ STD .dll that may or
         # may not be on the host system.
-    :   <linkflags>"-lpthread -static-libgcc -static-libstdc++"
+    :   <toolset>gcc:<linkflags>"-lpthread -static-libgcc -static-libstdc++"
     ;
 
 explicit gtest ;
