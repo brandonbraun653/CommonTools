@@ -704,21 +704,6 @@ class gcc_arm_none_eabi-linking-generator : unix-linking-generator
     }
 }
 
-local g ;
-g = [ new gcc_arm_none_eabi-linking-generator gcc_arm_none_eabi.link
-      : LIB OBJ
-      : EXE
-      : <toolset>gcc_arm_none_eabi ] ;
-$(g).set-rule-name gcc_arm_none_eabi.link ;
-generators.register $(g) ;
-      
-
-g = [ new gcc_arm_none_eabi-linking-generator gcc_arm_none_eabi.link.dll
-      : LIB OBJ
-      : SHARED_LIB
-      : <toolset>gcc_arm_none_eabi ] ;
-$(g).set-rule-name gcc_arm_none_eabi.link.dll ;
-generators.register $(g) ;
 
 # Declare flags for linking.
 # First, the common flags.

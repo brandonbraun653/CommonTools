@@ -1,0 +1,11 @@
+# -----------------------------------------------
+# Install me at one of the options listed here:
+# https://boostorg.github.io/build/manual/develop/index.html#bbv2.overview.configuration
+# -----------------------------------------------
+
+# -----------------------------------------------
+# In combination with gcc_arm_none_eabi.jam, adds support
+# for this compiler variant
+# -----------------------------------------------
+using gcc_arm_none_eabi : : "D:/ProgramFiles/gcc/bin/arm-none-eabi-g++.exe" ;
+path-constant OBJCOPY :  D:/ProgramFiles/gcc/bin/arm-none-eabi-objcopy.exe ;
