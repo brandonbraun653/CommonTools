@@ -52,8 +52,9 @@ feature.subfeature Thor : chip
 # description of an STM32 series microcontroller.
 # ------------------------------------------
 feature.subfeature Thor : variant
-    :   xx  # The default error variant
+    :   xx      # The default error variant
         RE
         ZI
+        SIM     # The chip registers are simulated
     :   propagated optional
     ;
