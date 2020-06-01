@@ -11,13 +11,13 @@
 import feature ;
 
 # ------------------------------------------
-# Decides whether or not the Thore features 
-# and functionality will be enabled or disabled. 
+# Decides whether or not the Thore features
+# and functionality will be enabled or disabled.
 # ------------------------------------------
-feature.feature Thor 
-    :   disabled 
-        enabled 
-    :   propagated optional 
+feature.feature Thor
+    :   disabled
+        enabled
+    :   propagated optional
     ;
 
 # ------------------------------------------
@@ -29,14 +29,15 @@ feature.subfeature Thor : family
         F4
         F7
         H7
-    :   propagated optional 
+        L4
+    :   propagated optional
     ;
 
 # ------------------------------------------
 # All supported family specific chip types. This is the middle tier
 # description of an STM32 series microcontroller.
 # ------------------------------------------
-feature.subfeature Thor : chip 
+feature.subfeature Thor : chip
     :   Fxxx    # The default error chip
         F4xx    # A generic STM32F4
         F446
@@ -44,7 +45,9 @@ feature.subfeature Thor : chip
         F767
         H7xx    # A generic STM32H7
         H743
-    :   propagated optional 
+        L4xx    # A generic STM32L4
+        L432
+    :   propagated optional
     ;
 
 # ------------------------------------------
@@ -52,7 +55,9 @@ feature.subfeature Thor : chip
 # description of an STM32 series microcontroller.
 # ------------------------------------------
 feature.subfeature Thor : variant
-    :   xx      # The default error variant
+    :   xx  # The default error variant
+        BU
+        KC
         RE
         ZI
         SIM     # The chip registers are simulated
