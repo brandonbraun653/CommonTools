@@ -125,6 +125,9 @@ generators.override gcc_arm_none_eabi.prebuilt : builtin.prebuilt ;
 generators.override gcc_arm_none_eabi.searched-lib-generator : searched-lib-generator ;
 
 # Make gcc toolset object files use the "o" suffix on all platforms.
+type.set-generated-target-suffix EXE : <toolset>gcc_arm_none_eabi <target-os>windows : elf ;
+type.set-generated-target-suffix LIB : <toolset>gcc_arm_none_eabi <target-os>windows <link>static : a ;
+
 type.set-generated-target-suffix OBJ : <toolset>gcc_arm_none_eabi : o ;
 type.set-generated-target-suffix OBJ : <toolset>gcc_arm_none_eabi <target-os>windows : o ;
 type.set-generated-target-suffix OBJ : <toolset>gcc_arm_none_eabi <target-os>cygwin : o ;
@@ -235,7 +238,7 @@ rule init ( version ? : command * : options * : requirement * )
     # Information about the gcc_arm_none_eabi command...
     #   The command.
     local command = $(tool-command) ;
-    #   The 'command' variable can have multiple elements but when calling the    
+    #   The 'command' variable can have multiple elements but when calling the
     # SHELL builtin we need a single string, and we need to quote elements
     # with spaces.
     local command-string = \"$(command)\" ;
@@ -353,7 +356,7 @@ rule init ( version ? : command * : options * : requirement * )
         rc-type = null ;
     }
     rc.configure $(rc) : $(condition) : <rc-type>$(rc-type) ;
-    
+
     toolset.flags gcc_arm_none_eabi VERSION $(condition) : [ regex.split $(version) "[.]" ] ;
 
     init-cxxstd-flags $(condition) : $(version) ;
@@ -608,21 +611,21 @@ actions compile.asm
 ###
 
 # Declare flags and action for compilation.
-toolset.flags gcc_arm_none_eabi.compile OPTIONS <optimization>off   : -O0 ;
-toolset.flags gcc_arm_none_eabi.compile OPTIONS <optimization>speed : -O3 ;
-toolset.flags gcc_arm_none_eabi.compile OPTIONS <optimization>space : -Os ;
+# toolset.flags gcc_arm_none_eabi.compile OPTIONS <optimization>off   : -O0 ;
+# toolset.flags gcc_arm_none_eabi.compile OPTIONS <optimization>speed : -O3 ;
+# toolset.flags gcc_arm_none_eabi.compile OPTIONS <optimization>space : -Os ;
 
-toolset.flags gcc_arm_none_eabi.compile OPTIONS <inlining>off  : -fno-inline ;
-toolset.flags gcc_arm_none_eabi.compile OPTIONS <inlining>on   : -Wno-inline ;
-toolset.flags gcc_arm_none_eabi.compile OPTIONS <inlining>full : -finline-functions -Wno-inline ;
+# toolset.flags gcc_arm_none_eabi.compile OPTIONS <inlining>off  : -fno-inline ;
+# toolset.flags gcc_arm_none_eabi.compile OPTIONS <inlining>on   : -Wno-inline ;
+# toolset.flags gcc_arm_none_eabi.compile OPTIONS <inlining>full : -finline-functions -Wno-inline ;
 
 toolset.flags gcc_arm_none_eabi.compile OPTIONS <warnings>off : -w ;
 toolset.flags gcc_arm_none_eabi.compile OPTIONS <warnings>on  : -Wall ;
 toolset.flags gcc_arm_none_eabi.compile OPTIONS <warnings>all : -Wall -pedantic ;
 toolset.flags gcc_arm_none_eabi.compile OPTIONS <warnings-as-errors>on : -Werror ;
 
-toolset.flags gcc_arm_none_eabi.compile OPTIONS <debug-symbols>on : -g ;
-toolset.flags gcc_arm_none_eabi.compile OPTIONS <profiling>on : -pg ;
+# toolset.flags gcc_arm_none_eabi.compile OPTIONS <debug-symbols>on : -g ;
+# toolset.flags gcc_arm_none_eabi.compile OPTIONS <profiling>on : -pg ;
 
 toolset.flags gcc_arm_none_eabi.compile OPTIONS <local-visibility>hidden : -fvisibility=hidden ;
 toolset.flags gcc_arm_none_eabi.compile.c++ OPTIONS <local-visibility>hidden : -fvisibility-inlines-hidden ;
@@ -704,11 +707,22 @@ class gcc_arm_none_eabi-linking-generator : unix-linking-generator
     }
 }
 
+generators.register
+  [ new gcc_arm_none_eabi-linking-generator gcc_arm_none_eabi.link
+      : LIB OBJ
+      : EXE
+      : <toolset>gcc_arm_none_eabi ] ;
+
+generators.register
+  [ new gcc_arm_none_eabi-linking-generator gcc_arm_none_eabi.link.dll
+      : LIB OBJ
+      : SHARED_LIB
+      : <toolset>gcc_arm_none_eabi ] ;
 
 # Declare flags for linking.
 # First, the common flags.
-toolset.flags gcc_arm_none_eabi.link OPTIONS <debug-symbols>on : -g ;
-toolset.flags gcc_arm_none_eabi.link OPTIONS <profiling>on : -pg ;
+# toolset.flags gcc_arm_none_eabi.link OPTIONS <debug-symbols>on : -g ;
+# toolset.flags gcc_arm_none_eabi.link OPTIONS <profiling>on : -pg ;
 toolset.flags gcc_arm_none_eabi.link USER_OPTIONS <linkflags> ;
 toolset.flags gcc_arm_none_eabi.link LINKPATH <library-path> ;
 toolset.flags gcc_arm_none_eabi.link FINDLIBS-ST <find-static-library> ;
@@ -744,7 +758,7 @@ rule link ( targets * : sources * : properties * )
 
 actions link bind LIBRARIES
 {
-    "$(CONFIG_COMMAND)" -L"$(LINKPATH)" -Wl,$(RPATH_OPTION:E=-R)$(SPACE)-Wl,$(RPATH) -Wl,-rpath-link$(SPACE)-Wl,"$(RPATH_LINK)" -o "$(<)" $(START-GROUP) "$(>)" "$(LIBRARIES)" $(FINDLIBS-ST-PFX) -l$(FINDLIBS-ST) $(FINDLIBS-SA-PFX) -l$(FINDLIBS-SA) $(END-GROUP) $(OPTIONS) $(USER_OPTIONS)
+    "$(CONFIG_COMMAND)" -L"$(LINKPATH)" -Wl,$(RPATH_OPTION:E=-R)$(SPACE)-Wl,$(RPATH) -Wl,-rpath-link$(SPACE)-Wl,"$(RPATH_LINK)" -o "$(<)" -Wl,--start-group -Wl,--whole-archive "$(>)" "$(LIBRARIES)" $(FINDLIBS-ST-PFX) -l$(FINDLIBS-ST) $(FINDLIBS-SA-PFX) -l$(FINDLIBS-SA) -Wl,--no-whole-archive -Wl,--end-group $(OPTIONS) $(USER_OPTIONS)
 }
 
 rule link.dll ( targets * : sources * : properties * )
