@@ -1,7 +1,7 @@
 # ====================================================
 # Device Family Options
 # ====================================================
-set(THOR_FAMILY "NotSet" CACHE STRING "Selects high level STM32 family type")
+set(THOR_FAMILY "SIM" CACHE STRING "Selects high level STM32 family type")
 set_property(CACHE THOR_FAMILY PROPERTY STRINGS
   F4
   F7
@@ -22,7 +22,7 @@ endif()
 # ====================================================
 # Device Chip Options
 # ====================================================
-set(THOR_CHIP "NotSet" CACHE STRING "Selects STM32 chip type")
+set(THOR_CHIP "SIM" CACHE STRING "Selects STM32 chip type")
 set_property(CACHE THOR_CHIP PROPERTY STRINGS
   F4xx
   F446
@@ -47,7 +47,7 @@ endif()
 # ====================================================
 # Device Variant Options
 # ====================================================
-set(THOR_VARIANT "NotSet" CACHE STRING "Selects STM32 variant type")
+set(THOR_VARIANT "SIM" CACHE STRING "Selects STM32 variant type")
 set_property(CACHE THOR_VARIANT PROPERTY STRINGS
   KB
   KC
