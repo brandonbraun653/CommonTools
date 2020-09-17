@@ -43,8 +43,8 @@ endif()
 # Pull in the appropriate toolchain file
 # ====================================================
 if(${TOOLCHAIN} MATCHES "^gcc$")
-  set(CMAKE_GENERATOR "Unix Makefiles" CACHE INTERNAL "" FORCE)
-  set(CMAKE_TOOLCHAIN_FILE "${COMMON_TOOL_ROOT}/cmake/toolchains/gcc.cmake" CACHE INTERNAL "" FORCE)
+  #set(CMAKE_GENERATOR "Unix Makefiles" CACHE INTERNAL "" FORCE)
+  #set(CMAKE_TOOLCHAIN_FILE "${COMMON_TOOL_ROOT}/cmake/toolchains/gcc.cmake" CACHE INTERNAL "" FORCE)
 elseif(${TOOLCHAIN} MATCHES "^gcc_arm_none_eabi$")
   set(CMAKE_GENERATOR "Unix Makefiles" CACHE INTERNAL "" FORCE)
   set(CMAKE_TOOLCHAIN_FILE "${COMMON_TOOL_ROOT}/cmake/toolchains/gcc_arm_none_eabi.cmake" CACHE INTERNAL "" FORCE)
