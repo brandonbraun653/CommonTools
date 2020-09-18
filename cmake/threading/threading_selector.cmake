@@ -8,13 +8,6 @@
 # 2020 | Brandon Braun | brandonbraun653@gmail.com
 # =============================================================================
 # ====================================================
-# Validate requirements of this module
-# ====================================================
-if(NOT HAS_THREADS)
-  message(WARNING "HAS_THREADS == OFF. Cannot configure test properties.")
-endif()
-
-# ====================================================
 # Native Threads
 # ====================================================
 option(THREAD_NATIVE "Enables native threading support" OFF)
@@ -30,7 +23,7 @@ endif()
 # ====================================================
 option(THREAD_FREERTOS "Enables FreeRTOS threading support" OFF)
 if(THREAD_FREERTOS)
-  message(STATUS "Enabled Native Threads")
+  message(STATUS "Enabled FreeRTOS Threads")
   set(Toolchain::REQUIRES_THREAD_FREERTOS TRUE CACHE INTERNAL "" FORCE)
 else()
   set(Toolchain::REQUIRES_THREAD_FREERTOS FALSE CACHE INTERNAL "" FORCE)

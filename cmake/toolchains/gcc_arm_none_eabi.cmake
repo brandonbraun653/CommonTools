@@ -14,13 +14,6 @@
 # 2020 | Brandon Braun | brandonbraun653@gmail.com
 # =============================================================================
 # ====================================================
-# Requirements
-# ====================================================
-if(NOT ARM_NONE_EABI_ROOT)
-message(STATUS "Toolchain: Binary root not set, assuming it can be found in PATH")
-endif()
-
-# ====================================================
 # Configure the toolchain paths
 # ====================================================
 # System Type
@@ -57,4 +50,3 @@ set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 # Exports
 # ====================================================
 set(Toolchain::HAS_GCC_ARM_NONE_EABI TRUE CACHE INTERNAL "" FORCE)
-message(STATUS "Toolchain: Found ${TOOLCHAIN}")
