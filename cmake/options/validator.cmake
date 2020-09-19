@@ -1,1 +1,0 @@
-# Validate that all configured options don't conflict with one another

@@ -7,7 +7,6 @@
 #
 # Variable Requirements:
 #   COMMON_TOOL_ROOT: Location of the CommonTool root directory
-#   TOOLCHAIN_BIN_ROOT: Location of binary root for toolchain executables
 #
 # CommonTool Github: https://github.com/brandonbraun653/CommonTools.git
 #
@@ -37,21 +36,16 @@ set_property(CACHE TOOLCHAIN PROPERTY STRINGS
 get_property(toolchain_allowed_strings CACHE TOOLCHAIN PROPERTY STRINGS)
 if(NOT ${TOOLCHAIN} IN_LIST toolchain_allowed_strings)
   message(FATAL_ERROR "Unsupported toolchain: ${TOOLCHAIN}")
+else()
+  message(STATUS "Configuring for toolchain: ${TOOLCHAIN}")
 endif()
 
 # ====================================================
 # Pull in the appropriate toolchain file
 # ====================================================
-if(${TOOLCHAIN} MATCHES "^gcc$")
-  #set(CMAKE_GENERATOR "Unix Makefiles" CACHE INTERNAL "" FORCE)
-  #set(CMAKE_TOOLCHAIN_FILE "${COMMON_TOOL_ROOT}/cmake/toolchains/gcc.cmake" CACHE INTERNAL "" FORCE)
-elseif(${TOOLCHAIN} MATCHES "^arm_none_eabi$")
+if(${TOOLCHAIN} MATCHES "^arm_none_eabi$")
   set(CMAKE_GENERATOR "Unix Makefiles" CACHE INTERNAL "" FORCE)
   set(CMAKE_TOOLCHAIN_FILE "${COMMON_TOOL_ROOT}/cmake/toolchains/gcc_arm_none_eabi.cmake" CACHE INTERNAL "" FORCE)
-elseif(${TOOLCHAIN} MATCHES "^msvc$")
-  #message(FATAL_ERROR "MSVC isn't a supported toolchain to load just yet.")
-elseif(${TOOLCHAIN} MATCHES "^clang$")
-  message(FATAL_ERROR "Clang isn't a supported toolchain to load just yet.")
 else()
   message(STATUS "Didn't match any toolchains")
 endif()
@@ -61,4 +55,4 @@ endif()
 # ====================================================
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/artifacts/lib CACHE INTERNAL "" FORCE)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/artifacts/lib CACHE INTERNAL "" FORCE)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/build/bin CACHE INTERNAL "" FORCE)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/artifacts/bin CACHE INTERNAL "" FORCE)
