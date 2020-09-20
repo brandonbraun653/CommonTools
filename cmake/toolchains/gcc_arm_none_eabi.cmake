@@ -39,6 +39,12 @@ set(CMAKE_OBJDUMP "${ARM_NONE_EABI_ROOT}arm-none-eabi-objdump")
 set(CMAKE_RANLIB "${ARM_NONE_EABI_ROOT}arm-none-eabi-ranlib")
 set(CMAKE_STRIP "${ARM_NONE_EABI_ROOT}arm-none-eabi-strip")
 
+# Postfixes, suffixes, prefixes
+set(CMAKE_EXECUTABLE_SUFFIX ".elf")
+set(CMAKE_DEBUG_POSTFIX "_dbg")
+set(CMAKE_RELEASE_POSTFIX "_dbg")
+
+# Needed for the test program to compile when --configuring
 set(CMAKE_EXE_LINKER_FLAGS "--specs=nosys.specs" CACHE INTERNAL "")
 
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
