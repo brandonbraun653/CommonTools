@@ -36,8 +36,6 @@ set_property(CACHE TOOLCHAIN PROPERTY STRINGS
 get_property(toolchain_allowed_strings CACHE TOOLCHAIN PROPERTY STRINGS)
 if(NOT ${TOOLCHAIN} IN_LIST toolchain_allowed_strings)
   message(FATAL_ERROR "Unsupported toolchain: ${TOOLCHAIN}")
-else()
-  message(STATUS "Configuring for toolchain: ${TOOLCHAIN}")
 endif()
 
 # ====================================================
@@ -46,6 +44,9 @@ endif()
 if(${TOOLCHAIN} MATCHES "^arm_none_eabi$")
   set(CMAKE_GENERATOR "Unix Makefiles" CACHE INTERNAL "" FORCE)
   set(CMAKE_TOOLCHAIN_FILE "${COMMON_TOOL_ROOT}/cmake/toolchains/gcc_arm_none_eabi.cmake" CACHE INTERNAL "" FORCE)
+elseif(${TOOLCHAIN} MATCHES "^gcc$")
+  set(CMAKE_GENERATOR "Unix Makefiles" CACHE INTERNAL "" FORCE)
+  set(CMAKE_TOOLCHAIN_FILE "${COMMON_TOOL_ROOT}/cmake/toolchains/gcc.cmake" CACHE INTERNAL "" FORCE)
 else()
   message(STATUS "Didn't match any toolchains")
 endif()

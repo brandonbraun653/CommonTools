@@ -35,6 +35,10 @@ set(CMAKE_OBJDUMP "${GCC_BIN_ROOT}objdump")
 set(CMAKE_RANLIB "${GCC_BIN_ROOT}ranlib")
 set(CMAKE_STRIP "${GCC_BIN_ROOT}strip")
 
+# Postfixes, suffixes, prefixes
+set(CMAKE_DEBUG_POSTFIX "_dbg")
+set(CMAKE_RELEASE_POSTFIX "_rel")
+
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
@@ -44,4 +48,3 @@ set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 # Exports
 # ====================================================
 set(Toolchain::HAS_GCC TRUE CACHE INTERNAL "" FORCE)
-message(STATUS "Toolchain: Found ${TOOLCHAIN}")
