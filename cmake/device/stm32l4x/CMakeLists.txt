@@ -14,7 +14,6 @@
 set(TARGET_OPTIONS prj_device_target)
 add_library(${TARGET_OPTIONS} INTERFACE)
 
-
 # ====================================================
 # Shared compiler options
 # ====================================================
@@ -29,7 +28,7 @@ target_compile_options(${TARGET_OPTIONS} INTERFACE
   -mfpu=fpv4-sp-d16
   -mthumb
   $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>
-  $<$<CONFIG:DEBUG>:-O1;-g3;-ggdb>
+  $<$<CONFIG:DEBUG>:-O0;-g3;-ggdb>
   $<$<CONFIG:RELEASE>:-Os;-g0;>
 )
 
