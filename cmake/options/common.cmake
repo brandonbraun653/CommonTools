@@ -17,7 +17,7 @@ endif()
 # ====================================================
 # Coverage Builds
 # ====================================================
-option(COVERAGE_BUILD "Enables/disables coverage generation" OFF)
+option(COVERAGE "Enables/disables coverage generation" OFF)
 
 # ===================================================================
 # Testing
