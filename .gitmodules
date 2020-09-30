@@ -7,3 +7,6 @@
 [submodule "cpputest"]
 	path = cpputest
 	url = https://github.com/brandonbraun653/cpputest.git
+[submodule "cmake/modules"]
+	path = cmake/modules
+	url = https://github.com/bilke/cmake-modules.git
