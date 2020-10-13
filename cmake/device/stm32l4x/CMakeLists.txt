@@ -3,11 +3,40 @@
 #   Builds an interface target for correctly compiling onto STM32L4xxxx chips.
 #
 # Exports:
+#   prj_build_target
 #   prj_device_target
 #
 # 2020 | Brandon Braun | brandonbraun653@gmail.com
 # =============================================================================
 
+# =============================================================================
+# Project Build Target:
+# Exports build settings that can be applied to other targets
+# =============================================================================
+# Only release build options
+set(BUILD_OPTIONS_REL prj_build_target_rel)
+add_library(${BUILD_OPTIONS_REL} INTERFACE)
+target_compile_options(${BUILD_OPTIONS_REL} INTERFACE -Os -g0)
+export(TARGETS ${BUILD_OPTIONS_REL} FILE "${PROJECT_BINARY_DIR}/DeviceTarget/${BUILD_OPTIONS_REL}.cmake")
+
+# Only debug build options
+set(BUILD_OPTIONS_DBG prj_build_target_dbg)
+add_library(${BUILD_OPTIONS_DBG} INTERFACE)
+target_compile_options(${BUILD_OPTIONS_DBG} INTERFACE -O0 -g3 -ggdb)
+export(TARGETS ${BUILD_OPTIONS_DBG} FILE "${PROJECT_BINARY_DIR}/DeviceTarget/${BUILD_OPTIONS_DBG}.cmake")
+
+# High level target that switches based on rel/dbg configuration
+set(BUILD_OPTIONS prj_build_target)
+add_library(${BUILD_OPTIONS} INTERFACE)
+target_compile_options(${BUILD_OPTIONS} INTERFACE $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>)
+target_link_libraries(${BUILD_OPTIONS} INTERFACE $<$<CONFIG:DEBUG>:${BUILD_OPTIONS_DBG}> $<$<CONFIG:RELEASE>:${BUILD_OPTIONS_REL}>)
+export(TARGETS ${BUILD_OPTIONS} FILE "${PROJECT_BINARY_DIR}/DeviceTarget/${BUILD_OPTIONS}.cmake")
+
+
+# =============================================================================
+# Project Device Target:
+# Exports architectural settings required for the device hardware
+# =============================================================================
 # ====================================================
 # Exported target
 # ====================================================
@@ -27,9 +56,6 @@ target_compile_options(${TARGET_OPTIONS} INTERFACE
   -mfloat-abi=hard
   -mfpu=fpv4-sp-d16
   -mthumb
-  $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>
-  $<$<CONFIG:DEBUG>:-O0;-g3;-ggdb>
-  $<$<CONFIG:RELEASE>:-Os;-g0;>
 )
 
 # ====================================================
