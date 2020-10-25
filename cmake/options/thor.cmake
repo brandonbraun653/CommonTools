@@ -141,8 +141,8 @@ if(${DEVICE_TARGET} MATCHES ${_DEV_REGEX})
     # Add more here
   endif()
 else() # Are some kind of simulated device
-
- message(STATUS "some kind of sim device")
+  message(STATUS "Using simulated Thor device support")
+  add_subdirectory("${COMMON_TOOL_ROOT}/cmake/device/generic" ${PROJECT_BINARY_DIR}/DeviceTarget)
 endif()
 
 
