@@ -47,11 +47,12 @@ add_library(${TARGET_OPTIONS} INTERFACE)
 # Shared compiler options
 # ====================================================
 target_compile_options(${TARGET_OPTIONS} INTERFACE
--fdata-sections
+  -fdata-sections
   -ffunction-sections
   -fmessage-length=0
   -fno-common
   -fno-exceptions
+  -m64
   $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>
 )
 
@@ -59,6 +60,10 @@ target_compile_options(${TARGET_OPTIONS} INTERFACE
 if(COVERAGE)
   target_compile_options(${TARGET_OPTIONS} INTERFACE --coverage)
   target_link_options(${TARGET_OPTIONS} INTERFACE --coverage)
+endif()
+
+if(GTEST)
+  target_link_libraries(${TARGET_OPTIONS} INTERFACE gmock_inc gtest_inc)
 endif()
 
 # ====================================================
@@ -71,7 +76,7 @@ target_link_options(${TARGET_OPTIONS} INTERFACE
 # ====================================================
 # Shared definitions
 # ====================================================
-target_compile_definitions(${TARGET_OPTIONS} INTERFACE CHIMERA_LITTLE_ENDIAN)
+target_compile_definitions(${TARGET_OPTIONS} INTERFACE CHIMERA_LITTLE_ENDIAN WIN32_LEAN_AND_MEAN)
 
 if(NATIVE_THREADS)
 target_compile_definitions(${TARGET_OPTIONS} INTERFACE USING_NATIVE_THREADS)
