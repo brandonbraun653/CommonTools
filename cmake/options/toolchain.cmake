@@ -25,7 +25,8 @@ endif()
 set(TOOLCHAIN "gcc" CACHE STRING "Selects the toolchain used in compilation")
 set_property(CACHE TOOLCHAIN PROPERTY STRINGS
   gcc
-  arm_none_eabi
+  arm-none-eabi
+  arm-linux-gnueabihf
   msvc
   clang
 )
@@ -41,9 +42,12 @@ endif()
 # ====================================================
 # Pull in the appropriate toolchain file
 # ====================================================
-if(${TOOLCHAIN} MATCHES "^arm_none_eabi$")
+if(${TOOLCHAIN} MATCHES "^arm-none-eabi$")
   set(CMAKE_GENERATOR "Unix Makefiles" CACHE INTERNAL "" FORCE)
   set(CMAKE_TOOLCHAIN_FILE "${COMMON_TOOL_ROOT}/cmake/toolchains/gcc_arm_none_eabi.cmake" CACHE INTERNAL "" FORCE)
+elseif(${TOOLCHAIN} MATCHES "^arm-linux-gnueabihf$")
+  set(CMAKE_GENERATOR "Unix Makefiles" CACHE INTERNAL "" FORCE)
+  set(CMAKE_TOOLCHAIN_FILE "${COMMON_TOOL_ROOT}/cmake/toolchains/arm_linux_gnueabihf.cmake" CACHE INTERNAL "" FORCE)
 elseif(${TOOLCHAIN} MATCHES "^gcc$")
   set(CMAKE_GENERATOR "Unix Makefiles" CACHE INTERNAL "" FORCE)
   set(CMAKE_TOOLCHAIN_FILE "${COMMON_TOOL_ROOT}/cmake/toolchains/gcc.cmake" CACHE INTERNAL "" FORCE)
