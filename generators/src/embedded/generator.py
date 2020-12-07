@@ -16,7 +16,7 @@ import src.embedded.projects.thor.prj_thor as thor
 
 from pathlib import Path
 from typing import Dict
-from src.embedded.argument_types import ArgLayer, ArgProject
+from src.embedded.argument_types import ArgLayer, ArgProject, ArgModule
 from src.embedded.configuration_types import DriverConfig
 
 
@@ -37,6 +37,9 @@ def parse_arguments() -> Dict:
     parser.add_argument('-l', '--layer', action="store", required=False, type=str, default="all",
                         choices=['all', 'hld', 'lld', 'lld_interface'],
                         help="Which driver layer(s) to generate")
+    parser.add_argument('-m', '--module', action="store", required=True, type=str,
+                        choices=['peripheral', 'generic'],
+                        help="The driver module type that is being created. This affects architecture.")
 
     arguments = parser.parse_known_args()[0]
 
@@ -62,6 +65,7 @@ def parse_arguments() -> Dict:
     sanitized['target'] = arguments.target.strip()
     sanitized['layer'] = ArgLayer.to_type(arguments.layer)
     sanitized['project'] = ArgProject.to_type(arguments.project)
+    sanitized['module'] = ArgModule.to_type(arguments.module)
 
     return sanitized
 
@@ -82,6 +86,8 @@ def generate_project_files(args: Dict) -> None:
     cfg.layer = args['layer']
     cfg.output_dir = args['output']
     cfg.target_device = args['target']
+    cfg.driver_name = args['driver']
+    cfg.module_type = args['module']
     cfg.author = "Brandon Braun"
     cfg.email = "brandonbraun653@gmail.com"
 

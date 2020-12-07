@@ -11,7 +11,7 @@
 import datetime
 
 from pathlib import Path
-from src.embedded.argument_types import ArgLayer, ArgProject
+from src.embedded.argument_types import ArgLayer, ArgProject, ArgModule
 
 
 class DriverConfig:
@@ -22,7 +22,9 @@ class DriverConfig:
         self._email = ""
         self._project = ArgProject.UNKNOWN
         self._layer = ArgLayer.UNKNOWN
+        self._module = ArgModule.UNKNOWN
         self._target_device = ""
+        self._driver_name = ""
         self._output_dir = Path.cwd()
 
     # ---------------------------------------------------------
@@ -58,6 +60,22 @@ class DriverConfig:
     # ---------------------------------------------------------
     # Project descriptions
     # ---------------------------------------------------------
+    @property
+    def module_type(self) -> ArgModule:
+        return self._module
+
+    @module_type.setter
+    def module_type(self, value) -> None:
+        self._module = ArgModule.to_type(value)
+
+    @property
+    def driver_name(self) -> str:
+        return self._driver_name
+
+    @driver_name.setter
+    def driver_name(self, value) -> None:
+        self._driver_name = value
+
     @property
     def output_dir(self) -> Path:
         return self._output_dir

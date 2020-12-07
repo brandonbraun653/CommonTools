@@ -8,7 +8,7 @@
 #   12/6/20 | Brandon Braun | brandonbraun653@gmail.com
 # **********************************************************************************************************************
 
-from abc import ABCMeta, abstractmethod
+from abc import abstractmethod
 from src.embedded.argument_types import ArgProject
 from src.embedded.configuration_types import DriverConfig
 

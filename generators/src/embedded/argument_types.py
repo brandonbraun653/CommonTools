@@ -55,3 +55,21 @@ class ArgLayer(Enum):
             return cls.ALL
         else:
             return cls.UNKNOWN
+
+
+class ArgModule(Enum):
+    UNKNOWN = 0
+    PERIPHERAL = 1  # Some kind of peripheral driver
+    GENERIC = 2     # A generic driver
+
+    @classmethod
+    def to_type(cls, arg: str or ArgModule) -> ArgModule:
+        if type(arg) == ArgModule:
+            return arg
+
+        if arg.lower() in ['periph', 'peripheral']:
+            return cls.PERIPHERAL
+        elif arg.lower() in ['gen', 'generic']:
+            return cls.GENERIC
+        else:
+            return cls.UNKNOWN
