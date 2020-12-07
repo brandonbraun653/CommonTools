@@ -1,17 +1,9 @@
 # **********************************************************************************************************************
 #   FileName:
-#       gen_chimera_driver.py
+#       gen_normal.py
 #
 #   Description:
-#       Generates a new Chimera driver template
+#       Generators for normal drivers (non-peripheral, non-implementer dependent)
 #
 #   12/6/20 | Brandon Braun | brandonbraun653@gmail.com
 # **********************************************************************************************************************
-
-from src.chimera_driver.generator import parse_arguments, ChimeraDriver
-
-
-if __name__ == "__main__":
-    arguments = parse_arguments()
-    gen = ChimeraDriver(arguments)
-    gen.create()

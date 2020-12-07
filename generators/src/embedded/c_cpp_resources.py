@@ -9,7 +9,7 @@
 # **********************************************************************************************************************
 
 from pathlib import Path
-from src.resource_types import __resource_dir, TextResource
+from src.embedded.resource_types import __resource_dir, TextResource
 
 
 cpp_dir = Path(__resource_dir, 'c_cpp').resolve()
@@ -27,8 +27,6 @@ class FileDescription(TextResource):
         with self._path.open('r') as f:
             return f.read()
 
-    def format(self, filename: str, description: str, date:str, author: str, email: str) -> str:
+    def format(self, filename: str, description: str, date: str, author: str, email: str) -> str:
         raw_string = self.get_resource()
         return raw_string.format(filename=filename, description=description, date=date, author=author, email=email)
-
-

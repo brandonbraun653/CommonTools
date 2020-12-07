@@ -12,7 +12,7 @@ from abc import ABCMeta, abstractmethod
 from pathlib import Path
 
 
-__resource_dir = Path(Path(__file__).parent, '../resources').resolve()
+__resource_dir = Path(Path(__file__).parent, '../../resources').resolve()
 
 
 class TextResource(metaclass=ABCMeta):
