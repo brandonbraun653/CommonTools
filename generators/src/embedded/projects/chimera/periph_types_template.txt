@@ -1,0 +1,73 @@
+#pragma once
+#ifndef CHIMERA_{driver_name_upper}_TYPES_HPP
+#define CHIMERA_{driver_name_upper}_TYPES_HPP
+
+/* STL Includes */
+#include <cstdint>
+#include <cstring>
+#include <memory>
+
+/* Chimera Includes */
+#include <Chimera/common>
+
+namespace Chimera::{driver_name_upper}
+{{
+  /*-------------------------------------------------------------------------------
+  Forward Declarations
+  -------------------------------------------------------------------------------*/
+  class Driver;
+  
+
+  /*-------------------------------------------------------------------------------
+  Aliases
+  -------------------------------------------------------------------------------*/
+  using Driver_sPtr = std::shared_ptr<Driver>;
+
+
+  /*-------------------------------------------------------------------------------
+  Constants
+  -------------------------------------------------------------------------------*/
+
+
+  /*-------------------------------------------------------------------------------
+  Enumerations
+  -------------------------------------------------------------------------------*/
+  enum class Channel : uint8_t
+  {{
+    
+    NUM_OPTIONS,
+    UNKNOWN
+  }};
+
+
+  /*-------------------------------------------------------------------------------
+  Structures
+  -------------------------------------------------------------------------------*/
+  namespace Backend
+  {{
+    struct DriverConfig
+    {{
+      bool isSupported; /**< A simple flag to let Chimera know if the driver is supported */
+
+      /**
+       *  Function pointer that initializes the backend driver's
+       *  memory. Should really only call once for initial set up.
+       */
+      Chimera::Status_t ( *initialize )();
+
+      /**
+       *  Resets the backend driver hardware to default configuration
+       *  settings, but does not wipe out any memory.
+       */
+      Chimera::Status_t ( *reset )();
+
+      /**
+       *  Factory function that creates a shared_ptr instance of the backend
+       *  driver, as long as it conforms to the expected interface.
+       */
+      Driver_sPtr ( *getDriver )( const Channel channel );
+    }};
+  }}  // namespace Backend
+}}  // namespace Chimera::{driver_name_upper}
+
+#endif /* !CHIMERA_{driver_name_upper}_TYPES_HPP */

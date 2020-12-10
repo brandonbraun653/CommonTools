@@ -1,0 +1,28 @@
+#pragma once
+#ifndef THOR_HW_{driver_name_upper}_TYPES_HPP
+#define THOR_HW_{driver_name_upper}_TYPES_HPP
+
+/* C++ Includes */
+#include <cstdint>
+
+/* Driver Includes */
+#include <Thor/lld/stm32{family_lower}x/{driver_name_lower}/hw_{driver_name_lower}_prj.hpp>
+
+namespace Thor::LLD::{driver_name_upper}
+{{
+  /*-------------------------------------------------------------------------------
+  Enumerations
+  -------------------------------------------------------------------------------*/
+
+
+  /*-------------------------------------------------------------------------------
+  Structures
+  -------------------------------------------------------------------------------*/
+  struct RegisterMap
+  {{
+    volatile uint32_t x;
+  }};
+
+}}    // namespace Thor::LLD::{driver_name_upper}
+
+#endif /* !THOR_HW_{driver_name_upper}_TYPES_HPP*/

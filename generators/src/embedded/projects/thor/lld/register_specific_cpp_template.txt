@@ -1,0 +1,65 @@
+/* Chimera Includes */
+#include <Chimera/{driver_name_lower}>
+
+/* Driver Includes */
+#include <Thor/cfg>
+#include <Thor/hld/dma/hld_dma_intf.hpp>
+#include <Thor/lld/interface/{driver_name_lower}/{driver_name_lower}_intf.hpp>
+#include <Thor/lld/{family_lower}x/rcc/hw_rcc_mapping.hpp>
+#include <Thor/lld/{family_lower}x/{driver_name_lower}/hw_{driver_name_lower}_types.hpp>
+#include <Thor/lld/{family_lower}x/{driver_name_lower}/variant/hw_{driver_name_lower}_register_{family_lower}xxxx.hpp>
+
+#if defined( STM32{chip_upper}xx ) && defined( THOR_LLD_{driver_name_upper} )
+
+namespace Thor::LLD::{driver_name_upper}
+{{
+}}    // namespace Thor::LLD::{driver_name_upper}
+
+namespace Thor::LLD::RCC::LookupTables
+{{
+  /*------------------------------------------------
+  Lookup tables for register access on a peripheral
+  by peripheral basis.
+  ------------------------------------------------*/
+  RegisterConfig {driver_name_upper}_ClockConfig[ Thor::LLD::{driver_name_upper}::NUM_{driver_name_upper}_PERIPHS ];
+  RegisterConfig {driver_name_upper}_ResetConfig[ Thor::LLD::{driver_name_upper}::NUM_{driver_name_upper}_PERIPHS ];
+  Chimera::Clock::Bus {driver_name_upper}_SourceClock[ Thor::LLD::{driver_name_upper}::NUM_{driver_name_upper}_PERIPHS ];
+
+  PCC {driver_name_upper}Lookup = {{ {driver_name_upper}_ClockConfig,
+                    nullptr,
+                    {driver_name_upper}_ResetConfig,
+                    {driver_name_upper}_SourceClock,
+                    Thor::LLD::{driver_name_upper}::NUM_{driver_name_upper}_PERIPHS,
+                    Thor::LLD::{driver_name_upper}::getResourceIndex }};
+
+  void {driver_name_upper}Init()
+  {{
+    using namespace Thor::LLD::{driver_name_upper};
+
+/*------------------------------------------------
+{driver_name_upper} clock enable register access lookup table
+------------------------------------------------*/
+#if defined( STM32_{driver_name_upper}1_PERIPH_AVAILABLE )
+    {driver_name_upper}_ClockConfig[ {driver_name_upper}1_RESOURCE_INDEX ].mask = //APB2ENR_{driver_name_upper}1EN;
+    {driver_name_upper}_ClockConfig[ {driver_name_upper}1_RESOURCE_INDEX ].reg  = //&RCC1_PERIPH->APB2ENR;
+#endif
+
+/*------------------------------------------------
+{driver_name_upper} reset register access lookup table
+------------------------------------------------*/
+#if defined( STM32_{driver_name_upper}1_PERIPH_AVAILABLE )
+    {driver_name_upper}_ResetConfig[ {driver_name_upper}1_RESOURCE_INDEX ].mask = //APB2RSTR_{driver_name_upper}1RST;
+    {driver_name_upper}_ResetConfig[ {driver_name_upper}1_RESOURCE_INDEX ].reg  = //&RCC1_PERIPH->APB2RSTR;
+#endif
+
+/*------------------------------------------------
+{driver_name_upper} clocking bus source identifier
+------------------------------------------------*/
+#if defined( STM32_{driver_name_upper}1_PERIPH_AVAILABLE )
+    {driver_name_upper}_SourceClock[ {driver_name_upper}1_RESOURCE_INDEX ] = //Chimera::Clock::Bus::APB2;
+#endif
+  }};
+
+}}    // namespace Thor::LLD::RCC::LookupTables
+
+#endif /* STM32{chip_upper}xx && THOR_LLD_{driver_name_upper} */

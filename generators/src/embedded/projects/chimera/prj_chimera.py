@@ -29,3 +29,5 @@ def generate_project(cfg: DriverConfig):
     if cfg.module_type == ArgModule.PERIPHERAL:
         for generator in peripheral_generator_list():
             generator.generate(cfg)
+    elif cfg.module_type == ArgModule.GENERIC:
+        raise NotImplementedError

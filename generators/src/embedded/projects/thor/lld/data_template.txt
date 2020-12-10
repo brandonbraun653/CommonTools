@@ -1,0 +1,43 @@
+/* STL Includes */
+#include <limits>
+
+/* Chimera Includes */
+#include <Chimera/{driver_name_lower}>
+
+/* Driver Includes */
+#include <Thor/cfg>
+#include <Thor/lld/interface/{driver_name_lower}/{driver_name_lower}_prv_data.hpp>
+
+#if defined( TARGET_STM32{family_upper} ) && defined( THOR_LLD_{driver_name_upper} )
+
+namespace Thor::LLD::{driver_name_upper}
+{{
+  /*-------------------------------------------------------------------------------
+  Peripheral Memory Maps
+  -------------------------------------------------------------------------------*/
+#if defined( STM32_{driver_name_upper}1_PERIPH_AVAILABLE )
+  RegisterMap *{driver_name_upper}1_PERIPH = reinterpret_cast<RegisterMap *>( {driver_name_upper}1_BASE_ADDR );
+#endif
+
+  /*-------------------------------------------------------------------------------
+  Configuration Maps
+  -------------------------------------------------------------------------------*/
+  namespace ConfigMap
+  {{ /* clang-format off */
+  }} /* clang-format on */
+
+
+  /*-------------------------------------------------------------------------------
+  Peripheral Resources
+  -------------------------------------------------------------------------------*/
+  namespace Resource
+  {{ /* clang-format off */
+    LLD_CONST IRQn_Type IRQSignals[ NUM_{driver_name_upper}_PERIPHS ] = {{
+#if defined( STM32_{driver_name_upper}1_PERIPH_AVAILABLE )
+      {driver_name_upper}1_IRQn,
+#endif
+    }};
+  }} /* clang-format on */
+}}  // namespace Thor::LLD::{driver_name_upper}
+
+#endif /* TARGET_STM32{family_upper} && THOR_LLD_{driver_name_upper} */

@@ -1,0 +1,34 @@
+# ====================================================
+# Common
+# ====================================================
+set(LINK_LIBS
+  thor_inc          # Thor public headers
+  chimera_inc       # Chimera public headers
+  aurora_inc        # Aurora public headers
+  Boost::boost      # Boost headers
+  lld_common_inc    # 3rd Party headers
+  thor_lld_stm32{family_lower}x_build_options
+)
+
+# ====================================================
+# Variant Library
+# ====================================================
+set(VARIANT thor_lld_stm32{family_lower}_{driver_name_lower}_variant)
+if(${{THOR_CHIP}} MATCHES "^{chip_upper}$")
+  add_library(${{VARIANT}} STATIC variant/hw_{driver_name_lower}_register_stm32{abbreviated_lower}.cpp)
+  target_link_libraries(${{VARIANT}} PRIVATE ${{LINK_LIBS}})
+  export(TARGETS ${{VARIANT}} FILE "${{PROJECT_BINARY_DIR}}/Thor/lld/${{VARIANT}}.cmake")
+else()
+  message(FATAL_ERROR "Unsupported STM32{family_upper} driver variant for: {driver_name_lower}")
+endif()
+
+# ====================================================
+# Driver Library (+ Variant)
+# ====================================================
+set(CORE thor_lld_stm32{family_lower}_{driver_name_lower})
+add_library(${{CORE}} STATIC
+  hw_{driver_name_lower}_driver.cpp
+  hw_{driver_name_lower}_data.cpp
+)
+target_link_libraries(${{CORE}} PRIVATE ${{LINK_LIBS}} ${{VARIANT}})
+export(TARGETS ${{CORE}} FILE "${{PROJECT_BINARY_DIR}}/Thor/lld/${{CORE}}.cmake")

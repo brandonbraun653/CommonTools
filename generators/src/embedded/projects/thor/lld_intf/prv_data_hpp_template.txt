@@ -1,0 +1,58 @@
+#pragma once
+#ifndef THOR_LLD_{driver_name_upper}_DATA
+#define THOR_LLD_{driver_name_upper}_DATA
+
+/* STL Includes */
+#include <cstddef>
+
+/* Chimera Includes */
+#include <Chimera/{driver_name_lower}>
+
+/* Thor Includes */
+#include <Thor/lld/common/macros.hpp>
+#include <Thor/lld/common/types.hpp>
+#include <Thor/lld/interface/{driver_name_lower}/{driver_name_lower}_detail.hpp>
+#include <Thor/lld/interface/interrupt/interrupt_detail.hpp>
+
+namespace Thor::LLD::{driver_name_upper}
+{{
+  /*-------------------------------------------------------------------------------
+  Constants
+  -------------------------------------------------------------------------------*/
+  static constexpr size_t DRIVER_MAX_PERIPHS = static_cast<size_t>( Chimera::{driver_name_upper}::Channel::NUM_OPTIONS );
+
+  /*-------------------------------------------------------------------------------
+  Project Defined Constants
+  -------------------------------------------------------------------------------*/
+
+
+  /*-------------------------------------------------------------------------------
+  Peripheral Instances:
+    Memory mapped structures that allow direct access to peripheral registers
+  -------------------------------------------------------------------------------*/
+#if defined( STM32_{driver_name_upper}1_PERIPH_AVAILABLE )
+  extern RegisterMap *{driver_name_upper}1_PERIPH;
+#endif
+
+
+  /*-------------------------------------------------------------------------------
+  Configuration Maps:
+    These convert high level configuration options into low level register config
+    options. The idea is to allow the user to specify some general options, then
+    convert that over to what the peripheral understands during config/init steps.
+  -------------------------------------------------------------------------------*/
+  namespace ConfigMap
+  {{
+  }}    // namespace ConfigMap
+
+
+  /*-------------------------------------------------------------------------------
+  Peripheral Resources
+  -------------------------------------------------------------------------------*/
+  namespace Resource
+  {{
+    extern LLD_CONST IRQn_Type IRQSignals[ NUM_{driver_name_upper}_PERIPHS ];
+  }}    // namespace ResourceMap
+}}    // namespace Thor::LLD::{driver_name_upper}
+
+#endif /* !THOR_LLD_{driver_name_upper}_DATA */

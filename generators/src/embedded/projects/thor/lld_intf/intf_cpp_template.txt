@@ -1,0 +1,98 @@
+/* Chimera Includes */
+#include <Chimera/common>
+
+/* Thor Includes */
+#include <Thor/lld/common/types.hpp>
+#include <Thor/lld/interface/{driver_name_lower}/{driver_name_lower}_detail.hpp>
+#include <Thor/lld/interface/{driver_name_lower}/{driver_name_lower}_prv_data.hpp>
+#include <Thor/lld/interface/{driver_name_lower}/{driver_name_lower}_types.hpp>
+#include <Thor/lld/interface/{driver_name_lower}/{driver_name_lower}_intf.hpp>
+
+namespace Thor::LLD::{driver_name_upper}
+{{
+  /*-------------------------------------------------------------------------------
+  Public Functions
+  -------------------------------------------------------------------------------*/
+  bool isSupported( const Chimera::{driver_name_upper}::Channel channel )
+  {{
+    switch ( channel )
+    {{
+#if defined( STM32_{driver_name_upper}1_PERIPH_AVAILABLE )
+      case Chimera::{driver_name_upper}::Channel::{driver_name_upper}0:
+        return true;
+        break;
+#endif
+
+      default:
+        return false;
+        break;
+    }};
+  }}
+
+
+  RIndex_t getResourceIndex( const Chimera::{driver_name_upper}::Channel channel )
+  {{
+    switch ( channel )
+    {{
+#if defined( STM32_{driver_name_upper}1_PERIPH_AVAILABLE )
+      case Chimera::{driver_name_upper}::Channel::{driver_name_upper}0:
+        return {driver_name_upper}1_RESOURCE_INDEX;
+        break;
+#endif
+
+      default:
+        return INVALID_RESOURCE_INDEX;
+        break;
+    }};
+  }}
+
+
+  RIndex_t getResourceIndex( const std::uintptr_t address )
+  {{
+#if defined( STM32_{driver_name_upper}1_PERIPH_AVAILABLE )
+    if ( address == reinterpret_cast<std::uintptr_t>( {driver_name_upper}1_PERIPH ) )
+    {{
+      return {driver_name_upper}1_RESOURCE_INDEX;
+    }}
+#endif
+
+    return INVALID_RESOURCE_INDEX;
+  }}
+
+
+  Chimera::{driver_name_upper}::Channel getChannel( const std::uintptr_t address )
+  {{
+#if defined( STM32_{driver_name_upper}1_PERIPH_AVAILABLE )
+    if ( address == reinterpret_cast<std::uintptr_t>( {driver_name_upper}1_PERIPH ) )
+    {{
+      return Chimera::{driver_name_upper}::Channel::{driver_name_upper}0;
+    }}
+#endif
+
+    return Chimera::{driver_name_upper}::Channel::UNKNOWN;
+  }}
+
+
+  bool attachDriverInstances( Driver *const driverList, const size_t numDrivers )
+  {{
+    /*-------------------------------------------------
+    Reject bad inputs
+    -------------------------------------------------*/
+    if ( !driverList || !numDrivers || ( numDrivers != NUM_{driver_name_upper}_PERIPHS ) )
+    {{
+      return false;
+    }}
+
+    /*-------------------------------------------------
+    Attach the drivers. The architecture of the LLD
+    ensures the ordering and number is correct.
+    -------------------------------------------------*/
+    Chimera::Status_t result = Chimera::Status::OK;
+
+#if defined( STM32_{driver_name_upper}1_PERIPH_AVAILABLE )
+    result |= driverList[ {driver_name_upper}1_RESOURCE_INDEX ].attach( {driver_name_upper}1_PERIPH );
+#endif
+
+    return result == Chimera::Status::OK;
+  }}
+}}    // namespace Thor::LLD::{driver_name_upper}

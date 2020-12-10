@@ -7,6 +7,7 @@
  *
  *  2020 | Brandon Braun | brandonbraun653@gmail.com
  ********************************************************************************/
+
 #pragma once
 #ifndef CHIMERA_ADC_INTERFACE_HPP
 #define CHIMERA_ADC_INTERFACE_HPP

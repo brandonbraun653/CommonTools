@@ -1,0 +1,28 @@
+#pragma once
+#ifndef THOR_LLD_{driver_name_upper}_REGISTER_STM32{abbreviated_upper}_HPP
+#define THOR_LLD_{driver_name_upper}_REGISTER_STM32{abbreviated_upper}_HPP
+
+/* STL Includes */
+#include <cstddef>
+
+/* Thor Includes */
+#include <Thor/lld/common/types.hpp>
+
+/*-------------------------------------------------------------------------------
+Macros
+-------------------------------------------------------------------------------*/
+#define STM32_{driver_name_upper}1_PERIPH_AVAILABLE
+
+
+namespace Thor::LLD::{driver_name_upper}
+{{
+  /*-------------------------------------------------------------------------------
+  Constants
+  -------------------------------------------------------------------------------*/
+  static constexpr size_t NUM_{driver_name_upper}_PERIPHS = 1;
+
+  static constexpr RIndex_t {driver_name_upper}1_RESOURCE_INDEX = 0u;
+
+}}    // namespace Thor::LLD::{driver_name_upper}
+
+#endif /* !THOR_LLD_{driver_name_upper}_REGISTER_STM32{abbreviated_upper}_HPP */

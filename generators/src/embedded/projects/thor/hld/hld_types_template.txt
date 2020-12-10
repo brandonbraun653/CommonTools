@@ -1,0 +1,23 @@
+#pragma once
+#ifndef THOR_HLD_{driver_name_upper}_TYPES_HPP
+#define THOR_HLD_{driver_name_upper}_TYPES_HPP
+
+/* C++ Includes */
+#include <memory>
+
+namespace Thor::{driver_name_upper}
+{{
+  /*-------------------------------------------------------------------------------
+  Forward Declarations
+  -------------------------------------------------------------------------------*/
+  class Driver;
+
+
+  /*-------------------------------------------------------------------------------
+  Aliases
+  -------------------------------------------------------------------------------*/
+  using Driver_rPtr = Driver *;
+  using Driver_sPtr = std::shared_ptr<Driver>;
+}}    // namespace Thor::{driver_name_upper}
+
+#endif /* !THOR_HLD_{driver_name_upper}_TYPES_HPP */

@@ -1,11 +1,11 @@
 # **********************************************************************************************************************
 #   FileName:
-#       gen_peripheral.py
+#       gen_hld.py
 #
 #   Description:
-#       Generators for files that belong to a peripheral driver
 #
-#   12/6/20 | Brandon Braun | brandonbraun653@gmail.com
+#
+#   12/7/20 | Brandon Braun | brandonbraun653@gmail.com
 # **********************************************************************************************************************
 
 from pathlib import Path
@@ -16,36 +16,63 @@ from src.embedded.projects.interface import FileGenerator
 from src.embedded.configuration_types import DriverConfig
 from src.embedded.c_cpp_resources import FileDescription
 
-relative_output_path = Path('Chimera', 'source', 'drivers', 'peripherals')
+relative_output_path = Path('Thor', 'hld')
 
 
-def peripheral_generator_list() -> List[FileGenerator]:
+def hld_generator_list() -> List[FileGenerator]:
     """
     Returns:
         All the generators used to create a Chimera peripheral driver
     """
-    return [Interface(), User(), Types(), Driver(), CMake()]
+    return [ChimeraInterface(), HLDDriver(), CMake()]
 
 
-class Interface(FileGenerator):
-
+class ChimeraInterface(FileGenerator):
     @property
     def project(self) -> ArgProject:
-        return ArgProject.CHIMERA
+        return ArgProject.THOR
 
-    def generate(self, cfg: DriverConfig):
+    def generate(self, cfg: DriverConfig) -> None:
+        self.generate_header(cfg)
+        self.generate_source(cfg)
+
+    def generate_header(self, cfg: DriverConfig) -> None:
         # ---------------------------------------------------------
         # File header
         # ---------------------------------------------------------
-        filename = "{}_intf.hpp".format(cfg.driver_name.lower())
-        desc = "Models the Chimera {} interface".format(cfg.driver_name.upper())
+        filename = "hld_{}_chimera.hpp".format(cfg.driver_name.lower())
+        desc = "Chimera hooks for implementing {}".format(cfg.driver_name.upper())
         header = FileDescription().format(filename=filename, description=desc, date=cfg.year, author=cfg.author,
                                           email=cfg.email)
 
         # ---------------------------------------------------------
         # Body
         # ---------------------------------------------------------
-        body = self._body_string()
+        body = self._get_header()
+        body = body.format(driver_name_upper=cfg.driver_name.upper(), driver_name_lower=cfg.driver_name.lower())
+
+        # ---------------------------------------------------------
+        # Write to file
+        # ---------------------------------------------------------
+        output = Path(cfg.output_dir, relative_output_path, cfg.driver_name.lower(), filename)
+        output.parent.mkdir(parents=True, exist_ok=True)
+        with output.open('w') as f:
+            f.write(header)
+            f.write(body)
+
+    def generate_source(self, cfg: DriverConfig) -> None:
+        # ---------------------------------------------------------
+        # File header
+        # ---------------------------------------------------------
+        filename = "hld_{}_chimera.cpp".format(cfg.driver_name.lower())
+        desc = "Implementation of Chimera {} driver hooks".format(cfg.driver_name.upper())
+        header = FileDescription().format(filename=filename, description=desc, date=cfg.year, author=cfg.author,
+                                          email=cfg.email)
+
+        # ---------------------------------------------------------
+        # Body
+        # ---------------------------------------------------------
+        body = self._get_source()
         body = body.format(driver_name_upper=cfg.driver_name.upper(), driver_name_lower=cfg.driver_name.lower())
 
         # ---------------------------------------------------------
@@ -58,31 +85,89 @@ class Interface(FileGenerator):
             f.write(body)
 
     @staticmethod
-    def _body_string() -> str:
-        pth = Path(Path(__file__).parent, 'periph_intf_template.txt')
+    def _get_header() -> str:
+        pth = Path(Path(__file__).parent, 'hld/hld_chimera_hpp_template.txt')
+        with pth.open('r') as f:
+            return f.read()
+
+    @staticmethod
+    def _get_source() -> str:
+        pth = Path(Path(__file__).parent, 'hld/hld_chimera_cpp_template.txt')
         with pth.open('r') as f:
             return f.read()
 
 
-class User(FileGenerator):
-
+class HLDDriver(FileGenerator):
     @property
     def project(self) -> ArgProject:
-        return ArgProject.CHIMERA
+        return ArgProject.THOR
 
-    def generate(self, cfg: DriverConfig):
+    def generate(self, cfg: DriverConfig) -> None:
+        self.generate_header(cfg)
+        self.generate_source(cfg)
+        self.generate_types(cfg)
+
+    def generate_header(self, cfg: DriverConfig) -> None:
         # ---------------------------------------------------------
         # File header
         # ---------------------------------------------------------
-        filename = "{}_user.hpp".format(cfg.driver_name.lower())
-        desc = "Implements an interface to create a Chimera {} peripheral".format(cfg.driver_name.upper())
+        filename = "hld_{}_driver.hpp".format(cfg.driver_name.lower())
+        desc = "Thor {} high level driver".format(cfg.driver_name.upper())
         header = FileDescription().format(filename=filename, description=desc, date=cfg.year, author=cfg.author,
                                           email=cfg.email)
 
         # ---------------------------------------------------------
         # Body
         # ---------------------------------------------------------
-        body = self._body_string()
+        body = self._get_header()
+        body = body.format(driver_name_upper=cfg.driver_name.upper(), driver_name_lower=cfg.driver_name.lower())
+
+        # ---------------------------------------------------------
+        # Write to file
+        # ---------------------------------------------------------
+        output = Path(cfg.output_dir, relative_output_path, cfg.driver_name.lower(), filename)
+        output.parent.mkdir(parents=True, exist_ok=True)
+        with output.open('w') as f:
+            f.write(header)
+            f.write(body)
+
+    def generate_source(self, cfg: DriverConfig) -> None:
+        # ---------------------------------------------------------
+        # File header
+        # ---------------------------------------------------------
+        filename = "hld_{}_driver.cpp".format(cfg.driver_name.lower())
+        desc = "Implements the custom driver variant of the Thor {} interface.".format(cfg.driver_name.upper())
+        header = FileDescription().format(filename=filename, description=desc, date=cfg.year, author=cfg.author,
+                                          email=cfg.email)
+
+        # ---------------------------------------------------------
+        # Body
+        # ---------------------------------------------------------
+        body = self._get_source()
+        body = body.format(driver_name_upper=cfg.driver_name.upper(), driver_name_lower=cfg.driver_name.lower())
+
+        # ---------------------------------------------------------
+        # Write to file
+        # ---------------------------------------------------------
+        output = Path(cfg.output_dir, relative_output_path, cfg.driver_name.lower(), filename)
+        output.parent.mkdir(parents=True, exist_ok=True)
+        with output.open('w') as f:
+            f.write(header)
+            f.write(body)
+
+    def generate_types(self, cfg: DriverConfig) -> None:
+        # ---------------------------------------------------------
+        # File header
+        # ---------------------------------------------------------
+        filename = "hld_{}_types.cpp".format(cfg.driver_name.lower())
+        desc = "Thor {} types".format(cfg.driver_name.upper())
+        header = FileDescription().format(filename=filename, description=desc, date=cfg.year, author=cfg.author,
+                                          email=cfg.email)
+
+        # ---------------------------------------------------------
+        # Body
+        # ---------------------------------------------------------
+        body = self._get_types()
         body = body.format(driver_name_upper=cfg.driver_name.upper(), driver_name_lower=cfg.driver_name.lower())
 
         # ---------------------------------------------------------
@@ -95,91 +180,28 @@ class User(FileGenerator):
             f.write(body)
 
     @staticmethod
-    def _body_string() -> str:
-        pth = Path(Path(__file__).parent, 'periph_user_template.txt')
+    def _get_header() -> str:
+        pth = Path(Path(__file__).parent, 'hld/hld_driver_hpp_template.txt')
         with pth.open('r') as f:
             return f.read()
 
-
-class Types(FileGenerator):
-
-    @property
-    def project(self) -> ArgProject:
-        return ArgProject.CHIMERA
-
-    def generate(self, cfg: DriverConfig):
-        # ---------------------------------------------------------
-        # File header
-        # ---------------------------------------------------------
-        filename = "{}_types.hpp".format(cfg.driver_name.lower())
-        desc = "Chimera {} types".format(cfg.driver_name.upper())
-        header = FileDescription().format(filename=filename, description=desc, date=cfg.year, author=cfg.author,
-                                          email=cfg.email)
-
-        # ---------------------------------------------------------
-        # Body
-        # ---------------------------------------------------------
-        body = self._body_string()
-        body = body.format(driver_name_upper=cfg.driver_name.upper(), driver_name_lower=cfg.driver_name.lower())
-
-        # ---------------------------------------------------------
-        # Write to file
-        # ---------------------------------------------------------
-        output = Path(cfg.output_dir, relative_output_path, cfg.driver_name.lower(), filename)
-        output.parent.mkdir(parents=True, exist_ok=True)
-        with output.open('w') as f:
-            f.write(header)
-            f.write(body)
-
     @staticmethod
-    def _body_string() -> str:
-        pth = Path(Path(__file__).parent, 'periph_types_template.txt')
+    def _get_source() -> str:
+        pth = Path(Path(__file__).parent, 'hld/hld_driver_cpp_template.txt')
         with pth.open('r') as f:
             return f.read()
 
-
-class Driver(FileGenerator):
-
-    @property
-    def project(self) -> ArgProject:
-        return ArgProject.CHIMERA
-
-    def generate(self, cfg: DriverConfig):
-        # ---------------------------------------------------------
-        # File header
-        # ---------------------------------------------------------
-        filename = "chimera_{}.cpp".format(cfg.driver_name.lower())
-        desc = "Implements the Chimera {} driver interface".format(cfg.driver_name.upper())
-        header = FileDescription().format(filename=filename, description=desc, date=cfg.year, author=cfg.author,
-                                          email=cfg.email)
-
-        # ---------------------------------------------------------
-        # Body
-        # ---------------------------------------------------------
-        body = self._body_string()
-        body = body.format(driver_name_upper=cfg.driver_name.upper(), driver_name_lower=cfg.driver_name.lower())
-
-        # ---------------------------------------------------------
-        # Write to file
-        # ---------------------------------------------------------
-        output = Path(cfg.output_dir, relative_output_path, cfg.driver_name.lower(), filename)
-        output.parent.mkdir(parents=True, exist_ok=True)
-        with output.open('w') as f:
-            f.write(header)
-            f.write(body)
-
     @staticmethod
-    def _body_string() -> str:
-        pth = Path(Path(__file__).parent, 'periph_driver_template.txt')
+    def _get_types() -> str:
+        pth = Path(Path(__file__).parent, 'hld/hld_types_template.txt')
         with pth.open('r') as f:
             return f.read()
 
 
 class CMake(FileGenerator):
-
     @property
     def project(self) -> ArgProject:
-        return ArgProject.CHIMERA
+        return ArgProject.THOR
 
     def generate(self, cfg: DriverConfig):
         # ---------------------------------------------------------
@@ -199,6 +221,6 @@ class CMake(FileGenerator):
 
     @staticmethod
     def _body_string() -> str:
-        pth = Path(Path(__file__).parent, 'periph_cmake_template.txt')
+        pth = Path(Path(__file__).parent, 'hld/hld_cmake_template.txt')
         with pth.open('r') as f:
             return f.read()

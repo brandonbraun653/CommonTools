@@ -1,0 +1,19 @@
+#pragma once
+#ifndef THOR_{driver_name_upper}_CHIMERA_HOOKS_HPP
+#define THOR_{driver_name_upper}_CHIMERA_HOOKS_HPP
+
+/* Chimera Includes */
+#include <Chimera/common>
+#include <Chimera/usb>
+
+namespace Chimera::{driver_name_upper}::Backend
+{{
+  /*-------------------------------------------------------------------------------
+  Public Functions
+  -------------------------------------------------------------------------------*/
+  Chimera::Status_t initialize();
+  Chimera::Status_t reset();
+  Driver_sPtr getDriver( const Channel channel );
+}}    // namespace Chimera::{driver_name_upper}::Backend
+
+#endif /* !THOR_{driver_name_upper}_CHIMERA_HOOKS_HPP */
