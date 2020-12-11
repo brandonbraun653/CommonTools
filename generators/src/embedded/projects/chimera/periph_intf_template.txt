@@ -38,13 +38,13 @@ namespace Chimera::{driver_name_upper}
   /**
    *  Virtual class to facilitate easy mocking of the driver
    */
-  class I{{driver_name_upper}} : virtual public HWInterface,
+  class I{driver_name_upper} : virtual public HWInterface,
                virtual public Chimera::Threading::LockableInterface
   {{
   public:
-    virtual ~I{{driver_name_upper}}() = default;
+    virtual ~I{driver_name_upper}() = default;
   }};
 
-}}  // namespace Chimera::{{driver_name_upper}}
+}}  // namespace Chimera::{driver_name_upper}
 
 #endif /* !CHIMERA_{driver_name_upper}_INTERFACE_HPP */
