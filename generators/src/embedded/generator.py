@@ -25,19 +25,19 @@ def parse_arguments() -> Dict:
     # Add arguments
     # ---------------------------------------------------------
     parser = argparse.ArgumentParser()
-    parser.add_argument('-d', '--driver', action="store", required=True, type=str,
+    parser.add_argument('--driver', action="store", required=True, type=str,
                         help="Name of the driver being created")
-    parser.add_argument('-o', '--output', action="store", required=False, type=str, default=".",
+    parser.add_argument('--output', action="store", required=False, type=str, default=".",
                         help="Output directory to place generated files in")
-    parser.add_argument('-p', '--project', action="store", required=True, type=str,
+    parser.add_argument('--target', action="store", required=False, type=str, default="",
+                        help="Which target device is the driver for (eg stm32l432kc, am3358, etc)")
+    parser.add_argument('--project', action="store", required=True, type=str,
                         choices=['Chimera', 'Thor', 'Apollo'],
                         help='Which project structure to target')
-    parser.add_argument('-t', '--target', action="store", required=False, type=str, default="",
-                        help="Which target device is the driver for")
-    parser.add_argument('-l', '--layer', action="store", required=False, type=str, default="all",
+    parser.add_argument('--layer', action="store", required=False, type=str, default="all",
                         choices=['all', 'hld', 'lld', 'lld_interface'],
                         help="Which driver layer(s) to generate")
-    parser.add_argument('-m', '--module', action="store", required=True, type=str,
+    parser.add_argument('--module', action="store", required=True, type=str,
                         choices=['peripheral', 'generic'],
                         help="The driver module type that is being created. This affects architecture.")
 
@@ -55,8 +55,8 @@ def parse_arguments() -> Dict:
         actual_path = pth
     else:
         rel_path = Path(Path.cwd(), pth).resolve()
-        if rel_path.exists():
-            actual_path = rel_path
+        rel_path.mkdir(parents=True, exist_ok=True)
+        actual_path = rel_path
 
     sanitized['output'] = actual_path
 
