@@ -5,9 +5,9 @@
 #include <Thor/cfg>
 #include <Thor/hld/dma/hld_dma_intf.hpp>
 #include <Thor/lld/interface/{driver_name_lower}/{driver_name_lower}_intf.hpp>
-#include <Thor/lld/{family_lower}x/rcc/hw_rcc_mapping.hpp>
-#include <Thor/lld/{family_lower}x/{driver_name_lower}/hw_{driver_name_lower}_types.hpp>
-#include <Thor/lld/{family_lower}x/{driver_name_lower}/variant/hw_{driver_name_lower}_register_{family_lower}xxxx.hpp>
+#include <Thor/lld/stm32{family_lower}x/rcc/hw_rcc_mapping.hpp>
+#include <Thor/lld/stm32{family_lower}x/{driver_name_lower}/hw_{driver_name_lower}_types.hpp>
+#include <Thor/lld/stm32{family_lower}x/{driver_name_lower}/variant/hw_{driver_name_lower}_register_stm32{family_lower}xxxx.hpp>
 
 #if defined( STM32{chip_upper}xx ) && defined( THOR_LLD_{driver_name_upper} )
 
