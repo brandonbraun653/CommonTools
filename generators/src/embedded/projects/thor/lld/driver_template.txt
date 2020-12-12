@@ -79,14 +79,14 @@ namespace Thor::LLD::{driver_name_upper}
     Get peripheral descriptor settings
     ------------------------------------------------*/
     mPeriph       = peripheral;
-    resourceIndex = getResourceIndex( reinterpret_cast<std::uintptr_t>( peripheral ) );
+    mResourceIndex = getResourceIndex( reinterpret_cast<std::uintptr_t>( peripheral ) );
 
     /*------------------------------------------------
     Handle the ISR configuration
     ------------------------------------------------*/
-    Thor::LLD::IT::disableIRQ( Resource::IRQSignals[ resourceIndex ] );
-    Thor::LLD::IT::clearPendingIRQ( Resource::IRQSignals[ resourceIndex ] );
-    Thor::LLD::IT::setPriority( Resource::IRQSignals[ resourceIndex ], Thor::Interrupt::{driver_name_upper}_IT_PREEMPT_PRIORITY, 0u );
+    Thor::LLD::IT::disableIRQ( Resource::IRQSignals[ mResourceIndex ] );
+    Thor::LLD::IT::clearPendingIRQ( Resource::IRQSignals[ mResourceIndex ] );
+    Thor::LLD::IT::setPriority( Resource::IRQSignals[ mResourceIndex ], Thor::Interrupt::{driver_name_upper}_IT_PREEMPT_PRIORITY, 0u );
 
     return Chimera::Status::OK;
   }}
@@ -101,26 +101,26 @@ namespace Thor::LLD::{driver_name_upper}
   void Driver::clockEnable()
   {{
     auto rcc = Thor::LLD::RCC::getPeripheralClock();
-    rcc->enableClock( Chimera::Peripheral::Type::PERIPH_{driver_name_upper}, resourceIndex );
+    rcc->enableClock( Chimera::Peripheral::Type::PERIPH_{driver_name_upper}, mResourceIndex );
   }}
 
 
   void Driver::clockDisable()
   {{
     auto rcc = Thor::LLD::RCC::getPeripheralClock();
-    rcc->disableClock( Chimera::Peripheral::Type::PERIPH_{driver_name_upper}, resourceIndex );
+    rcc->disableClock( Chimera::Peripheral::Type::PERIPH_{driver_name_upper}, mResourceIndex );
   }}
 
 
   inline void Driver::enterCriticalSection()
   {{
-    Thor::LLD::IT::disableIRQ( Resource::IRQSignals[ resourceIndex ] );
+    Thor::LLD::IT::disableIRQ( Resource::IRQSignals[ mResourceIndex ] );
   }}
 
 
   inline void Driver::exitCriticalSection()
   {{
-    Thor::LLD::IT::enableIRQ( Resource::IRQSignals[ resourceIndex ] );
+    Thor::LLD::IT::enableIRQ( Resource::IRQSignals[ mResourceIndex ] );
   }}
 
 

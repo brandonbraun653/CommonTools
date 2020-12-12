@@ -104,7 +104,7 @@ namespace Thor::LLD::{driver_name_upper}
      *  @param[in]  cfg           Configuration info
      *  @return Chimera::Status_t
      */
-    virtual Chimera::Status_t initialize( const Chimera::{driver_name_upper}::PeriphConfig &cfg ) = 0;
+    virtual Chimera::Status_t initialize( const Chimera::{driver_name_upper}::DriverConfig &cfg ) = 0;
 
     /**
      *  Resets the hardware registers back to boot-up values
@@ -149,7 +149,7 @@ namespace Thor::LLD::{driver_name_upper}
     ~Driver();
 
     Chimera::Status_t attach( RegisterMap *const peripheral );
-    Chimera::Status_t initialize( const Chimera::{driver_name_upper}::PeriphConfig &cfg );
+    Chimera::Status_t initialize( const Chimera::{driver_name_upper}::DriverConfig &cfg );
     Chimera::Status_t reset();
     void clockReset();
     void clockEnable();
@@ -163,7 +163,7 @@ namespace Thor::LLD::{driver_name_upper}
   private:
     RegisterMap *mPeriph;
     size_t mResourceIndex;
-    Chimera::{driver_name_upper}::PeriphConfig mCfg;
+    Chimera::{driver_name_upper}::DriverConfig mCfg;
   }};
 
 }}    // namespace Thor::LLD::{driver_name_upper}

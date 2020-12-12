@@ -41,7 +41,8 @@ class ChimeraInterface(FileGenerator):
         # File header
         # ---------------------------------------------------------
         filename = "hld_{}_chimera.hpp".format(cfg.driver_name.lower())
-        desc = "Chimera hooks for implementing {}".format(cfg.driver_name.upper())
+        desc = "Chimera hooks for implementing {}".format(
+            cfg.driver_name.upper())
         header = FileDescription().format(filename=filename, description=desc, date=cfg.year, author=cfg.author,
                                           email=cfg.email)
 
@@ -49,12 +50,14 @@ class ChimeraInterface(FileGenerator):
         # Body
         # ---------------------------------------------------------
         body = self._get_header()
-        body = body.format(driver_name_upper=cfg.driver_name.upper(), driver_name_lower=cfg.driver_name.lower())
+        body = body.format(driver_name_upper=cfg.driver_name.upper(
+        ), driver_name_lower=cfg.driver_name.lower())
 
         # ---------------------------------------------------------
         # Write to file
         # ---------------------------------------------------------
-        output = Path(cfg.output_dir, relative_output_path, cfg.driver_name.lower(), filename)
+        output = Path(cfg.output_dir, relative_output_path,
+                      cfg.driver_name.lower(), filename)
         output.parent.mkdir(parents=True, exist_ok=True)
         with output.open('w') as f:
             f.write(header)
@@ -65,7 +68,8 @@ class ChimeraInterface(FileGenerator):
         # File header
         # ---------------------------------------------------------
         filename = "hld_{}_chimera.cpp".format(cfg.driver_name.lower())
-        desc = "Implementation of Chimera {} driver hooks".format(cfg.driver_name.upper())
+        desc = "Implementation of Chimera {} driver hooks".format(
+            cfg.driver_name.upper())
         header = FileDescription().format(filename=filename, description=desc, date=cfg.year, author=cfg.author,
                                           email=cfg.email)
 
@@ -73,12 +77,14 @@ class ChimeraInterface(FileGenerator):
         # Body
         # ---------------------------------------------------------
         body = self._get_source()
-        body = body.format(driver_name_upper=cfg.driver_name.upper(), driver_name_lower=cfg.driver_name.lower())
+        body = body.format(driver_name_upper=cfg.driver_name.upper(
+        ), driver_name_lower=cfg.driver_name.lower())
 
         # ---------------------------------------------------------
         # Write to file
         # ---------------------------------------------------------
-        output = Path(cfg.output_dir, relative_output_path, cfg.driver_name.lower(), filename)
+        output = Path(cfg.output_dir, relative_output_path,
+                      cfg.driver_name.lower(), filename)
         output.parent.mkdir(parents=True, exist_ok=True)
         with output.open('w') as f:
             f.write(header)
@@ -120,12 +126,14 @@ class HLDDriver(FileGenerator):
         # Body
         # ---------------------------------------------------------
         body = self._get_header()
-        body = body.format(driver_name_upper=cfg.driver_name.upper(), driver_name_lower=cfg.driver_name.lower())
+        body = body.format(driver_name_upper=cfg.driver_name.upper(
+        ), driver_name_lower=cfg.driver_name.lower())
 
         # ---------------------------------------------------------
         # Write to file
         # ---------------------------------------------------------
-        output = Path(cfg.output_dir, relative_output_path, cfg.driver_name.lower(), filename)
+        output = Path(cfg.output_dir, relative_output_path,
+                      cfg.driver_name.lower(), filename)
         output.parent.mkdir(parents=True, exist_ok=True)
         with output.open('w') as f:
             f.write(header)
@@ -136,7 +144,8 @@ class HLDDriver(FileGenerator):
         # File header
         # ---------------------------------------------------------
         filename = "hld_{}_driver.cpp".format(cfg.driver_name.lower())
-        desc = "Implements the custom driver variant of the Thor {} interface.".format(cfg.driver_name.upper())
+        desc = "Implements the custom driver variant of the Thor {} interface.".format(
+            cfg.driver_name.upper())
         header = FileDescription().format(filename=filename, description=desc, date=cfg.year, author=cfg.author,
                                           email=cfg.email)
 
@@ -144,12 +153,14 @@ class HLDDriver(FileGenerator):
         # Body
         # ---------------------------------------------------------
         body = self._get_source()
-        body = body.format(driver_name_upper=cfg.driver_name.upper(), driver_name_lower=cfg.driver_name.lower())
+        body = body.format(driver_name_upper=cfg.driver_name.upper(
+        ), driver_name_lower=cfg.driver_name.lower())
 
         # ---------------------------------------------------------
         # Write to file
         # ---------------------------------------------------------
-        output = Path(cfg.output_dir, relative_output_path, cfg.driver_name.lower(), filename)
+        output = Path(cfg.output_dir, relative_output_path,
+                      cfg.driver_name.lower(), filename)
         output.parent.mkdir(parents=True, exist_ok=True)
         with output.open('w') as f:
             f.write(header)
@@ -159,7 +170,7 @@ class HLDDriver(FileGenerator):
         # ---------------------------------------------------------
         # File header
         # ---------------------------------------------------------
-        filename = "hld_{}_types.cpp".format(cfg.driver_name.lower())
+        filename = "hld_{}_types.hpp".format(cfg.driver_name.lower())
         desc = "Thor {} types".format(cfg.driver_name.upper())
         header = FileDescription().format(filename=filename, description=desc, date=cfg.year, author=cfg.author,
                                           email=cfg.email)
@@ -168,12 +179,14 @@ class HLDDriver(FileGenerator):
         # Body
         # ---------------------------------------------------------
         body = self._get_types()
-        body = body.format(driver_name_upper=cfg.driver_name.upper(), driver_name_lower=cfg.driver_name.lower())
+        body = body.format(driver_name_upper=cfg.driver_name.upper(
+        ), driver_name_lower=cfg.driver_name.lower())
 
         # ---------------------------------------------------------
         # Write to file
         # ---------------------------------------------------------
-        output = Path(cfg.output_dir, relative_output_path, cfg.driver_name.lower(), filename)
+        output = Path(cfg.output_dir, relative_output_path,
+                      cfg.driver_name.lower(), filename)
         output.parent.mkdir(parents=True, exist_ok=True)
         with output.open('w') as f:
             f.write(header)
@@ -214,7 +227,8 @@ class CMake(FileGenerator):
         # ---------------------------------------------------------
         # Write to file
         # ---------------------------------------------------------
-        output = Path(cfg.output_dir, relative_output_path, cfg.driver_name.lower(), filename)
+        output = Path(cfg.output_dir, relative_output_path,
+                      cfg.driver_name.lower(), filename)
         output.parent.mkdir(parents=True, exist_ok=True)
         with output.open('w') as f:
             f.write(body)

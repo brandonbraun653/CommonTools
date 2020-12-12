@@ -4,7 +4,7 @@
 
 /* Chimera Includes */
 #include <Chimera/common>
-#include <Chimera/usb>
+#include <Chimera/{driver_name_lower}>
 
 namespace Chimera::{driver_name_upper}::Backend
 {{
