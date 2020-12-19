@@ -19,10 +19,16 @@ add_library(${BUILD_OPTIONS_REL} INTERFACE)
 target_compile_options(${BUILD_OPTIONS_REL} INTERFACE -Os -g0)
 export(TARGETS ${BUILD_OPTIONS_REL} FILE "${PROJECT_BINARY_DIR}/DeviceTarget/${BUILD_OPTIONS_REL}.cmake")
 
+# Only release with debug build options
+set(BUILD_OPTIONS_DBG prj_build_target_rel_dbg)
+add_library(${BUILD_OPTIONS_DBG} INTERFACE)
+target_compile_options(${BUILD_OPTIONS_DBG} INTERFACE -O2 -g3 -ggdb)
+export(TARGETS ${BUILD_OPTIONS_DBG} FILE "${PROJECT_BINARY_DIR}/DeviceTarget/${BUILD_OPTIONS_DBG}.cmake")
+
 # Only debug build options
 set(BUILD_OPTIONS_DBG prj_build_target_dbg)
 add_library(${BUILD_OPTIONS_DBG} INTERFACE)
-target_compile_options(${BUILD_OPTIONS_DBG} INTERFACE -O0 -g3 -ggdb)
+target_compile_options(${BUILD_OPTIONS_DBG} INTERFACE -Og -g3 -ggdb)
 export(TARGETS ${BUILD_OPTIONS_DBG} FILE "${PROJECT_BINARY_DIR}/DeviceTarget/${BUILD_OPTIONS_DBG}.cmake")
 
 # High level target that switches based on rel/dbg configuration
@@ -85,6 +91,8 @@ target_compile_definitions(${TARGET_OPTIONS} INTERFACE
 # ====================================================
 # Select the linker script for the supported device
 # ====================================================
+target_link_options(${TARGET_OPTIONS} INTERFACE "-Wl,-Map=${LAST_BUILT_VERSION_DIRECTORY}/${CMAKE_PROJECT_NAME}.map")
+
 set(LINKER_DIR "${COMMON_TOOL_ROOT}/linker_scripts/stm32l4x")
 if(OVERRIDE_LINKER_SCRIPT)
   message(STATUS "Overriding default linker script for STM32L4 device")

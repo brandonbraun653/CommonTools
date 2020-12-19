@@ -15,9 +15,10 @@ message(FATAL_ERROR "Path to the CommonTool root must be defined")
 endif()
 
 # ====================================================
-# Coverage Builds
+# Build Types
 # ====================================================
 option(COVERAGE "Enables/disables coverage generation" OFF)
+option(PRJ_BUILD_TYPE "Allows project to control individual library build type" OFF)
 
 # ===================================================================
 # Testing
