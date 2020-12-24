@@ -31,7 +31,7 @@ export(TARGETS ${BUILD_OPTIONS_REL_DBG} FILE "${PROJECT_BINARY_DIR}/DeviceTarget
 set(BUILD_OPTIONS_DBG prj_build_target_dbg)
 add_library(${BUILD_OPTIONS_DBG} INTERFACE)
 target_compile_definitions(${BUILD_OPTIONS_DBG} INTERFACE "DEBUG")
-target_compile_options(${BUILD_OPTIONS_DBG} INTERFACE -Og -g3 -ggdb)
+target_compile_options(${BUILD_OPTIONS_DBG} INTERFACE -O0 -g3 -ggdb)
 export(TARGETS ${BUILD_OPTIONS_DBG} FILE "${PROJECT_BINARY_DIR}/DeviceTarget/${BUILD_OPTIONS_DBG}.cmake")
 
 # High level target that switches based on rel/dbg configuration
