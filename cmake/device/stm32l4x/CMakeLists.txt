@@ -16,18 +16,21 @@
 # Only release build options
 set(BUILD_OPTIONS_REL prj_build_target_rel)
 add_library(${BUILD_OPTIONS_REL} INTERFACE)
+target_compile_definitions(${BUILD_OPTIONS_REL} INTERFACE "RELEASE")
 target_compile_options(${BUILD_OPTIONS_REL} INTERFACE -Os -g0)
 export(TARGETS ${BUILD_OPTIONS_REL} FILE "${PROJECT_BINARY_DIR}/DeviceTarget/${BUILD_OPTIONS_REL}.cmake")
 
 # Only release with debug build options
-set(BUILD_OPTIONS_DBG prj_build_target_rel_dbg)
-add_library(${BUILD_OPTIONS_DBG} INTERFACE)
-target_compile_options(${BUILD_OPTIONS_DBG} INTERFACE -O2 -g3 -ggdb)
-export(TARGETS ${BUILD_OPTIONS_DBG} FILE "${PROJECT_BINARY_DIR}/DeviceTarget/${BUILD_OPTIONS_DBG}.cmake")
+set(BUILD_OPTIONS_REL_DBG prj_build_target_rel_dbg)
+add_library(${BUILD_OPTIONS_REL_DBG} INTERFACE)
+target_compile_definitions(${BUILD_OPTIONS_REL_DBG} INTERFACE "DBG_REL" "REL_DBG")
+target_compile_options(${BUILD_OPTIONS_REL_DBG} INTERFACE -O2 -g3 -ggdb)
+export(TARGETS ${BUILD_OPTIONS_REL_DBG} FILE "${PROJECT_BINARY_DIR}/DeviceTarget/${BUILD_OPTIONS_REL_DBG}.cmake")
 
 # Only debug build options
 set(BUILD_OPTIONS_DBG prj_build_target_dbg)
 add_library(${BUILD_OPTIONS_DBG} INTERFACE)
+target_compile_definitions(${BUILD_OPTIONS_DBG} INTERFACE "DEBUG")
 target_compile_options(${BUILD_OPTIONS_DBG} INTERFACE -Og -g3 -ggdb)
 export(TARGETS ${BUILD_OPTIONS_DBG} FILE "${PROJECT_BINARY_DIR}/DeviceTarget/${BUILD_OPTIONS_DBG}.cmake")
 
