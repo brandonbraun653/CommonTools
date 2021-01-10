@@ -137,6 +137,8 @@ if(${DEVICE_TARGET} MATCHES ${_DEV_REGEX})
   # ====================================================
   if(${THOR_FAMILY} MATCHES "^L4$")
     add_subdirectory("${COMMON_TOOL_ROOT}/cmake/device/stm32l4x" ${PROJECT_BINARY_DIR}/DeviceTarget)
+  elseif(${THOR_FAMILY} MATCHES "^F4$")
+    add_subdirectory("${COMMON_TOOL_ROOT}/cmake/device/stm32f4x" ${PROJECT_BINARY_DIR}/DeviceTarget)
   else()
     # Add more here
   endif()
