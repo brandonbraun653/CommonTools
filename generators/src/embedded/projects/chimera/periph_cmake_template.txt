@@ -2,7 +2,7 @@
 # Common
 # ====================================================
 set(LINK_LIBS
-  chimera_inc       # Chimera public headers
+  chimera_intf_inc       # Chimera public headers
   chimera_build_options
 )
 
