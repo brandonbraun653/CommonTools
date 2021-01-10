@@ -22,8 +22,6 @@ namespace Thor::{driver_name_upper}
   Chimera::Status_t initialize();
   Chimera::Status_t reset();
   Driver_rPtr getDriver( const Chimera::{driver_name_upper}::Channel ch );
-  Driver_sPtr getDriverShared( const Chimera::{driver_name_upper}::Channel ch );
-
 
   /*-------------------------------------------------------------------------------
   Classes

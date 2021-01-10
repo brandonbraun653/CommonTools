@@ -13,7 +13,7 @@ namespace Chimera::{driver_name_upper}::Backend
   -------------------------------------------------------------------------------*/
   Chimera::Status_t initialize();
   Chimera::Status_t reset();
-  Driver_sPtr getDriver( const Channel channel );
+  Driver_rPtr getDriver( const Channel channel );
 }}    // namespace Chimera::{driver_name_upper}::Backend
 
 #endif /* !THOR_{driver_name_upper}_CHIMERA_HOOKS_HPP */

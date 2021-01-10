@@ -25,7 +25,7 @@ static constexpr size_t NUM_DRIVERS = ::LLD::NUM_{driver_name_upper}_PERIPHS;
 Variables
 -------------------------------------------------------------------------------*/
 static Chimera::{driver_name_upper}::Driver s_raw_driver[ NUM_DRIVERS ];
-static Chimera::{driver_name_upper}::Driver_sPtr s_shared_driver[ NUM_DRIVERS ];
+static Chimera::{driver_name_upper}::Driver_rPtr s_shared_driver[ NUM_DRIVERS ];
 
 
 namespace Chimera::{driver_name_upper}::Backend
@@ -37,7 +37,7 @@ namespace Chimera::{driver_name_upper}::Backend
   {{
     for ( size_t x = 0; x < NUM_DRIVERS; x++ )
     {{
-      s_shared_driver[ x ] = Chimera::{driver_name_upper}::Driver_sPtr( &s_raw_driver[ x ] );
+      s_shared_driver[ x ] = Chimera::{driver_name_upper}::Driver_rPtr( &s_raw_driver[ x ] );
     }}
 
     return Thor::{driver_name_upper}::initialize();
@@ -50,7 +50,7 @@ namespace Chimera::{driver_name_upper}::Backend
   }}
 
 
-  Chimera::{driver_name_upper}::Driver_sPtr getDriver( const Channel ch )
+  Chimera::{driver_name_upper}::Driver_rPtr getDriver( const Channel ch )
   {{
     auto idx = ::LLD::getResourceIndex( ch );
     return s_shared_driver[ idx ];

@@ -17,7 +17,6 @@ namespace Thor::{driver_name_upper}
   Aliases
   -------------------------------------------------------------------------------*/
   using Driver_rPtr = Driver *;
-  using Driver_sPtr = std::shared_ptr<Driver>;
 }}    // namespace Thor::{driver_name_upper}
 
 #endif /* !THOR_HLD_{driver_name_upper}_TYPES_HPP */

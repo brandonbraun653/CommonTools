@@ -16,12 +16,12 @@ namespace Chimera::{driver_name_upper}
   Forward Declarations
   -------------------------------------------------------------------------------*/
   class Driver;
-  
+
 
   /*-------------------------------------------------------------------------------
   Aliases
   -------------------------------------------------------------------------------*/
-  using Driver_sPtr = std::shared_ptr<Driver>;
+  using Driver_rPtr = Driver *;
 
 
   /*-------------------------------------------------------------------------------
@@ -34,7 +34,7 @@ namespace Chimera::{driver_name_upper}
   -------------------------------------------------------------------------------*/
   enum class Channel : uint8_t
   {{
-    
+
     NUM_OPTIONS,
     UNKNOWN
   }};
@@ -65,7 +65,7 @@ namespace Chimera::{driver_name_upper}
        *  Factory function that creates a shared_ptr instance of the backend
        *  driver, as long as it conforms to the expected interface.
        */
-      Driver_sPtr ( *getDriver )( const Channel channel );
+      Driver_rPtr ( *getDriver )( const Channel channel );
     }};
   }}  // namespace Backend
 }}  // namespace Chimera::{driver_name_upper}

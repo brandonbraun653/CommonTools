@@ -27,7 +27,7 @@ namespace Thor::LLD::{driver_name_upper}
    *  Gets a shared pointer to the {driver_name_upper} driver for a particular channel
    *
    *  @param[in] channel        The {driver_name_upper} channel to grab (1 indexed)
-   *  @return IDriver_sPtr      Instance of the {driver_name_upper} driver for the requested channel
+   *  @return IDriver_rPtr      Instance of the {driver_name_upper} driver for the requested channel
    */
   Driver_rPtr getDriver( const Chimera::{driver_name_upper}::Channel channel );
 

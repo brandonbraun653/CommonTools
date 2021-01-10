@@ -35,7 +35,7 @@ namespace Thor::{driver_name_upper}
   -------------------------------------------------------------------------------*/
   static size_t s_driver_initialized;                /**< Tracks the module level initialization state */
   static HLD::Driver hld_driver[ NUM_DRIVERS ];      /**< Driver objects */
-  static HLD::Driver_sPtr hld_shared[ NUM_DRIVERS ]; /**< Shared references to driver objects */
+  static HLD::Driver_rPtr hld_shared[ NUM_DRIVERS ]; /**< Shared references to driver objects */
 
 
   /*-------------------------------------------------------------------------------
@@ -59,9 +59,9 @@ namespace Thor::{driver_name_upper}
     for ( size_t x = 0; x < NUM_DRIVERS; x++ )
     {{
 #if defined( THOR_HLD_TEST ) || defined( THOR_HLD_TEST_{driver_name_upper} )
-      hld_shared[ x ] = HLD::Driver_sPtr( new HLD::Driver() );
+      hld_shared[ x ] = HLD::Driver_rPtr( new HLD::Driver() );
 #else
-      hld_shared[ x ] = HLD::Driver_sPtr( &hld_driver[ x ] );
+      hld_shared[ x ] = HLD::Driver_rPtr( &hld_driver[ x ] );
 #endif
     }}
 
@@ -105,18 +105,6 @@ namespace Thor::{driver_name_upper}
     }}
   }}
 
-
-  Driver_sPtr getDriverShared( const Chimera::{driver_name_upper}::Channel ch )
-  {{
-    if ( auto idx = LLD::getResourceIndex( ch ); idx != ::Thor::LLD::INVALID_RESOURCE_INDEX )
-    {{
-      return hld_shared[ idx ];
-    }}
-    else
-    {{
-      return nullptr;
-    }}
-  }}
 
   /*-------------------------------------------------------------------------------
   Driver Implementation
