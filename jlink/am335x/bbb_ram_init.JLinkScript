@@ -1,14 +1,17 @@
 //**********************************************************************************************************************
 // File:
-//   cpu_init.tcl
+//   bbb_ram_init.JLinkScript
 //
 // Description:
 //   Initialization procedures for the beaglebone black. This was taken from the TI CCS gel file for
-//   this device and then modified to work with Jim-TCL for OpenOCD.
+//   this device and then modified to work with JLink.
 //
 // 2021 | Brandon Braun | brandonbraun653@gmail.com
 //**********************************************************************************************************************
 
+//#################################################################################################
+//                              DEVICE CONSTANTS AND DEFINITIONS
+//#################################################################################################
 //****************************************************
 // PRCM module definitions
 //****************************************************
@@ -292,6 +295,34 @@ __constant U32 ALLOPP_DDR3_REF_CTRL                              = 0x00000C30;
 __constant U32 ALLOPP_DDR3_ZQ_CONFIG                             = 0x50074BE4;
 
 
+//******************************************************************
+// User Configurable Parameters
+//  (Because why would we need local variables?)
+//******************************************************************
+U32 tmp         = 0;  // Scratch variable
+U32 i           = 0;  // Loop iterator
+U32 clk_in_mhz  = 0;
+U32 ref_clk     = 0;
+U32 clk_out4    = 0;
+U32 clk_out5    = 0;
+U32 clk_out6    = 0;
+U32 clkmode     = 0;
+U32 clksel      = 0;
+U32 div_m2      = 0;
+U32 div_m4      = 0;
+U32 div_m5      = 0;
+U32 div_m6      = 0;
+
+
+//#################################################################################################
+//                                    USER SETUP FUNCTIONS
+//#################################################################################################
+
+//******************************************************************************
+// DisableWatchdog
+//   Disables the on-chip hardware watchdog
+//
+//******************************************************************************
 void DisableWatchdog()
 {
   JLINK_SYS_MessageBox("Disabling Watchdog");
@@ -316,31 +347,32 @@ void DisableWatchdog()
 //   are set, then uses this info to discover the input crystal frequency.
 //
 //******************************************************************************
-void GetInputClockFrequency()
+U32 GetInputClockFrequency()
 {
+  tmp = JLINK_MEM_ReadU32( CONTROL_STATUS );
+  tmp = ( tmp >> 22 ) & 0x3;
 
-}
-
-
-//******************************************************************************
-// ARM_OPPP100_Config
-//   Configures the processor PLLs to run in OPP100 mode.
-//
-//******************************************************************************
-void ARM_OPP100_Config()
-{
-
-}
-
-
-//******************************************************************************
-// DDR3_EMIF_Config
-//   Configures the DDR external memory interface controller
-//
-//******************************************************************************
-void DDR3_EMIF_Config()
-{
-
+  if ( tmp == 0 )
+  {
+    return 19;
+  }
+  else if( tmp == 1 )
+  {
+    return 24;
+  }
+  else if( tmp == 2 )
+  {
+    return 25;
+  }
+  else if( tmp == 3 )
+  {
+    return 26;
+  }
+  else
+  {
+    JLINK_SYS_MessageBox("Invalid clock configuration setting");
+    return 0;
+  }
 }
 
 
@@ -357,7 +389,25 @@ void DDR3_EMIF_Config()
 //******************************************************************************
 void CORE_PLL_Config( U32 CLKIN, U32 N, U32 M, U32 M4, U32 M5, U32 M6)
 {
+  JLINK_SYS_Report( "Configuring CORE PLL" );
 
+  JLINK_SYS_Report( "Going to bypass..." );
+  JLINK_MEM_WriteU32( CM_CLKMODE_DPLL_CORE, ( ( clkmode & 0xFFFFFFF8) | 0x4 ) );
+  while( ( JLINK_MEM_ReadU32( CM_IDLEST_DPLL_CORE ) & 0x100 ) != 0x100 ) { ; }
+  JLINK_SYS_Report( "Bypassed, chaning values" );
+
+  // Assign multiplier and divisor
+  clksel &= ~0x7FFFF;
+  clksel |= ( M << 0x8 ) | N;
+  JLINK_MEM_WriteU32( CM_CLKSEL_DPLL_CORE, clksel );
+  JLINK_MEM_WriteU32( CM_DIV_M4_DPLL_CORE, M4 );
+  JLINK_MEM_WriteU32( CM_DIV_M5_DPLL_CORE, M5 );
+  JLINK_MEM_WriteU32( CM_DIV_M6_DPLL_CORE, M6 );
+
+  JLINK_SYS_Report( "Locking CORE PLL" );
+  JLINK_MEM_WriteU32( CM_CLKMODE_DPLL_CORE, ( ( clkmode & 0xFFFFFFF8 ) | 0x7 ) );
+  while( ( JLINK_MEM_ReadU32( CM_IDLEST_DPLL_CORE ) & 0x1 ) != 0x1 ) { ; }
+  JLINK_SYS_Report( "Locked!" );
 }
 
 
@@ -372,7 +422,30 @@ void CORE_PLL_Config( U32 CLKIN, U32 N, U32 M, U32 M4, U32 M5, U32 M6)
 //******************************************************************************
 void PER_PLL_Config( U32 CLKIN, U32 N, U32 M, U32 M2)
 {
+  JLINK_SYS_Report( "Configuring PER PLL" );
 
+  clkmode = JLINK_MEM_ReadU32( CM_CLKMODE_DPLL_PER );
+  clksel  = JLINK_MEM_ReadU32( CM_CLKSEL_DPLL_PER );
+  div_m2  = JLINK_MEM_ReadU32( CM_DIV_M2_DPLL_PER );
+
+  JLINK_SYS_Report( "Going to bypass..." );
+  JLINK_MEM_WriteU32( CM_CLKMODE_DPLL_PER, ( ( clkmode & 0xFFFFFFF8) | 0x4 ) );
+  while( ( JLINK_MEM_ReadU32( CM_IDLEST_DPLL_PER ) & 0x100 ) != 0x100 ) { ; }
+  JLINK_SYS_Report( "Bypassed, chaning values" );
+
+  // Assign multiplier and divisor
+  clksel &= ~0xFF0FFFFF;
+  clksel |= 0x04000000;
+  clksel |= ( M << 0x8 ) | N;
+  JLINK_MEM_WriteU32( CM_CLKSEL_DPLL_PER, clksel );
+
+  JLINK_MEM_WriteU32( CM_DIV_M2_DPLL_PER, ( M2 | 0xFFFFFF80 ) );
+
+
+  JLINK_SYS_Report( "Locking PER PLL" );
+  JLINK_MEM_WriteU32( CM_CLKMODE_DPLL_PER, ( ( clkmode & 0xFFFFFFF8 ) | 0x7 ) );
+  while( ( JLINK_MEM_ReadU32( CM_IDLEST_DPLL_PER ) & 0x1 ) != 0x1 ) { ; }
+  JLINK_SYS_Report( "Locked!" );
 }
 
 
@@ -387,7 +460,28 @@ void PER_PLL_Config( U32 CLKIN, U32 N, U32 M, U32 M2)
 //******************************************************************************
 void MPU_PLL_Config( U32 CLKIN, U32 N, U32 M, U32 M2)
 {
+  clkmode = JLINK_MEM_ReadU32( CM_CLKMODE_DPLL_MPU );
+  clksel  = JLINK_MEM_ReadU32( CM_CLKSEL_DPLL_MPU );
+  div_m2  = JLINK_MEM_ReadU32( CM_DIV_M2_DPLL_MPU );
 
+
+  JLINK_SYS_Report( "Going to bypass..." );
+  JLINK_MEM_WriteU32( CM_CLKMODE_DPLL_MPU, ( ( clkmode & 0xFFFFFFF8) | 0x4 ) );
+  while( ( JLINK_MEM_ReadU32( CM_IDLEST_DPLL_MPU ) & 0x100 ) != 0x100 ) { ; }
+  JLINK_SYS_Report( "Bypassed, chaning values" );
+
+
+  // Assign multiplier and divisor
+  clksel &= ~0x7FFFF;
+  clksel |= ( M << 0x8 ) | N;
+  JLINK_MEM_WriteU32( CM_CLKSEL_DPLL_MPU, clksel );
+
+  JLINK_MEM_WriteU32( CM_DIV_M2_DPLL_MPU, ( M2 | 0xFFFFFF80 ) );
+
+  JLINK_SYS_Report( "Locking MPU PLL" );
+  JLINK_MEM_WriteU32( CM_CLKMODE_DPLL_MPU, ( ( clkmode & 0xFFFFFFF8 ) | 0x7 ) );
+  while( ( JLINK_MEM_ReadU32( CM_IDLEST_DPLL_MPU ) & 0x1 ) != 0x1 ) { ; }
+  JLINK_SYS_Report( "Locked!" );
 }
 
 
@@ -402,7 +496,28 @@ void MPU_PLL_Config( U32 CLKIN, U32 N, U32 M, U32 M2)
 //******************************************************************************
 void DISP_PLL_Config( U32 CLKIN, U32 N, U32 M, U32 M2)
 {
+  clkmode = JLINK_MEM_ReadU32( CM_CLKMODE_DPLL_DISP );
+  clksel  = JLINK_MEM_ReadU32( CM_CLKSEL_DPLL_DISP );
+  div_m2  = JLINK_MEM_ReadU32( CM_DIV_M2_DPLL_DISP );
 
+
+  JLINK_SYS_Report( "Going to bypass..." );
+  JLINK_MEM_WriteU32( CM_CLKMODE_DPLL_DISP, ( ( clkmode & 0xFFFFFFF8) | 0x4 ) );
+  while( ( JLINK_MEM_ReadU32( CM_IDLEST_DPLL_DISP ) & 0x100 ) != 0x100 ) { ; }
+  JLINK_SYS_Report( "Bypassed, chaning values" );
+
+
+  // Assign multiplier and divisor
+  clksel &= ~0x7FFFF;
+  clksel |= ( M << 0x8 ) | N;
+  JLINK_MEM_WriteU32( CM_CLKSEL_DPLL_DISP, clksel );
+
+  JLINK_MEM_WriteU32( CM_DIV_M2_DPLL_DISP, ( M2 | 0xFFFFFF80 ) );
+
+  JLINK_SYS_Report( "Locking DISP PLL" );
+  JLINK_MEM_WriteU32( CM_CLKMODE_DPLL_DISP, ( ( clkmode & 0xFFFFFFF8 ) | 0x7 ) );
+  while( ( JLINK_MEM_ReadU32( CM_IDLEST_DPLL_DISP ) & 0x1 ) != 0x1 ) { ; }
+  JLINK_SYS_Report( "Locked!" );
 }
 
 
@@ -417,7 +532,28 @@ void DISP_PLL_Config( U32 CLKIN, U32 N, U32 M, U32 M2)
 //******************************************************************************
 void DDR_PLL_Config( U32 CLKIN, U32 N, U32 M, U32 M2)
 {
+  clkmode = JLINK_MEM_ReadU32( CM_CLKMODE_DPLL_DDR );
+  clksel  = JLINK_MEM_ReadU32( CM_CLKSEL_DPLL_DDR );
+  div_m2  = JLINK_MEM_ReadU32( CM_DIV_M2_DPLL_DDR );
 
+
+  JLINK_SYS_Report( "Going to bypass..." );
+  JLINK_MEM_WriteU32( CM_CLKMODE_DPLL_DDR, ( ( clkmode & 0xFFFFFFF8) | 0x4 ) );
+  while( ( JLINK_MEM_ReadU32( CM_IDLEST_DPLL_DDR ) & 0x100 ) != 0x100 ) { ; }
+  JLINK_SYS_Report( "Bypassed, chaning values" );
+
+
+  // Assign multiplier and divisor
+  clksel &= ~0x7FFFF;
+  clksel |= ( M << 0x8 ) | N;
+  JLINK_MEM_WriteU32( CM_CLKSEL_DPLL_DDR, clksel );
+
+  JLINK_MEM_WriteU32( CM_DIV_M2_DPLL_DDR, ( M2 | 0xFFFFFF80 ) );
+
+  JLINK_SYS_Report( "Locking DDR PLL" );
+  JLINK_MEM_WriteU32( CM_CLKMODE_DPLL_DDR, ( ( clkmode & 0xFFFFFFF8 ) | 0x7 ) );
+  while( ( JLINK_MEM_ReadU32( CM_IDLEST_DPLL_DDR ) & 0x1 ) != 0x1 ) { ; }
+  JLINK_SYS_Report( "Locked!" );
 }
 
 
@@ -428,7 +564,10 @@ void DDR_PLL_Config( U32 CLKIN, U32 N, U32 M, U32 M2)
 //******************************************************************************
 void EMIF_PRCM_CLK_ENABLE()
 {
-
+  JLINK_SYS_Report( "EMIF PRCM is in progress" );
+  JLINK_MEM_WriteU32( CM_PER_EMIF_CLKCTRL, 0x02 );
+  while( ( JLINK_MEM_ReadU32( CM_PER_EMIF_CLKCTRL ) & 0x02 ) != 0x02 ) { ; }
+  JLINK_SYS_Report( "EMIF PRCM done" );
 }
 
 
@@ -439,7 +578,25 @@ void EMIF_PRCM_CLK_ENABLE()
 //******************************************************************************
 void VTP_Enable()
 {
+  // Clear the register
+  JLINK_MEM_WriteU32( VTP_CTRL_REG, 0x0 );
 
+  // Set the filter bits
+  JLINK_MEM_WriteU32( VTP_CTRL_REG, 0x6 );
+
+  // Write 1 to enable VTP
+  JLINK_MEM_WriteU32( VTP_CTRL_REG, ( JLINK_MEM_ReadU32( VTP_CTRL_REG ) | 0x40 ) );
+
+  // Write 0 to clrz bit
+  JLINK_MEM_WriteU32( VTP_CTRL_REG, ( JLINK_MEM_ReadU32( VTP_CTRL_REG ) & 0xFFFFFFFE ) );
+
+  // Write 1 to clrz bit
+  JLINK_MEM_WriteU32( VTP_CTRL_REG, ( JLINK_MEM_ReadU32( VTP_CTRL_REG ) | 0x1 ) );
+
+  // Check the ready bit
+  JLINK_SYS_Report( "Waiting for VTP ready" );
+  while( ( JLINK_MEM_ReadU32( VTP_CTRL_REG ) & 0x20 ) != 0x20 ) { ; }
+  JLINK_SYS_Report( "VTP ready!" );
 }
 
 
@@ -450,7 +607,13 @@ void VTP_Enable()
 //******************************************************************************
 void PHY_Config_CMD()
 {
-
+  i = 0;
+  while( i < 3 )
+  {
+    JLINK_MEM_WriteU32( ( CMD0_REG_PHY_CTRL_SLAVE_RATIO_0 + ( i * 0x34 ) ), CMD_PHY_CTRL_SLAVE_RATIO );
+    JLINK_MEM_WriteU32( ( CMD0_REG_PHY_INVERT_CLKOUT_0    + ( i * 0x34 ) ), CMD_PHY_INVERT_CLKOUT );
+    i += 1;
+  }
 }
 
 
@@ -461,16 +624,107 @@ void PHY_Config_CMD()
 //******************************************************************************
 void PHY_Config_DATA()
 {
-
+  i = 0;
+  while( i < 2 )
+  {
+    JLINK_MEM_WriteU32( ( DATA0_REG_PHY_RD_DQS_SLAVE_RATIO_0  + ( i * 0xA4 ) ), DATA_PHY_RD_DQS_SLAVE_RATIO );
+    JLINK_MEM_WriteU32( ( DATA0_REG_PHY_WR_DQS_SLAVE_RATIO_0  + ( i * 0xA4 ) ), DATA_PHY_WR_DQS_SLAVE_RATIO );
+    JLINK_MEM_WriteU32( ( DATA0_REG_PHY_FIFO_WE_SLAVE_RATIO_0 + ( i * 0xA4 ) ), DATA_PHY_FIFO_WE_SLAVE_RATIO );
+    JLINK_MEM_WriteU32( ( DATA0_REG_PHY_WR_DATA_SLAVE_RATIO_0 + ( i * 0xA4 ) ), DATA_PHY_WR_DATA_SLAVE_RATIO );
+    i += 1;
+  }
 }
 
 
+//******************************************************************************
+// DDR3_EMIF_Config
+//   Configures the DDR external memory interface controller
+//
+//******************************************************************************
+void DDR3_EMIF_Config()
+{
+  EMIF_PRCM_CLK_ENABLE();
+  VTP_Enable();
+  PHY_Config_CMD();
+  PHY_Config_DATA();
+
+  JLINK_MEM_WriteU32( DDR_CMD0_IOCTRL, DDR_IOCTRL_VALUE );
+  JLINK_MEM_WriteU32( DDR_CMD1_IOCTRL, DDR_IOCTRL_VALUE );
+  JLINK_MEM_WriteU32( DDR_CMD2_IOCTRL, DDR_IOCTRL_VALUE );
+  JLINK_MEM_WriteU32( DDR_DATA0_IOCTRL, DDR_IOCTRL_VALUE );
+  JLINK_MEM_WriteU32( DDR_DATA1_IOCTRL, DDR_IOCTRL_VALUE );
+
+  // IO to work for DDR3
+  JLINK_MEM_WriteU32( DDR_IO_CTRL, ( JLINK_MEM_ReadU32( DDR_IO_CTRL ) & ~0x1 ) );
+
+  // CKE controlled by EMIF/DDR_PHY
+  JLINK_MEM_WriteU32( DDR_CKE_CTRL, ( JLINK_MEM_ReadU32( DDR_CKE_CTRL ) | 0x1 ) );
+
+  // Conifgure the timing register
+  JLINK_MEM_WriteU32( EMIF_DDR_PHY_CTRL_1_REG       , ALLOPP_DDR3_READ_LATENCY );
+  JLINK_MEM_WriteU32( EMIF_DDR_PHY_CTRL_1_SHDW_REG  , ALLOPP_DDR3_READ_LATENCY );
+  JLINK_MEM_WriteU32( EMIF_DDR_PHY_CTRL_2_REG       , ALLOPP_DDR3_READ_LATENCY );
+  JLINK_MEM_WriteU32( EMIF_SDRAM_TIM_1_REG          , ALLOPP_DDR3_SDRAM_TIMING1 );
+  JLINK_MEM_WriteU32( EMIF_SDRAM_TIM_1_SHDW_REG     , ALLOPP_DDR3_SDRAM_TIMING1 );
+  JLINK_MEM_WriteU32( EMIF_SDRAM_TIM_2_REG          , ALLOPP_DDR3_SDRAM_TIMING2 );
+  JLINK_MEM_WriteU32( EMIF_SDRAM_TIM_2_SHDW_REG     , ALLOPP_DDR3_SDRAM_TIMING2 );
+  JLINK_MEM_WriteU32( EMIF_SDRAM_TIM_3_REG          , ALLOPP_DDR3_SDRAM_TIMING3 );
+  JLINK_MEM_WriteU32( EMIF_SDRAM_TIM_3_SHDW_REG     , ALLOPP_DDR3_SDRAM_TIMING3 );
+  JLINK_MEM_WriteU32( EMIF_SDRAM_REF_CTRL_REG       , ALLOPP_DDR3_REF_CTRL );
+  JLINK_MEM_WriteU32( EMIF_SDRAM_REF_CTRL_SHDW_REG  , ALLOPP_DDR3_REF_CTRL );
+  JLINK_MEM_WriteU32( EMIF_ZQ_CONFIG_REG            , ALLOPP_DDR3_ZQ_CONFIG );
+  JLINK_MEM_WriteU32( EMIF_SDRAM_CONFIG_REG         , ALLOPP_DDR3_SDRAM_CONFIG );
+
+  // Wait for PHY to be ready
+  while( ( JLINK_MEM_ReadU32( EMIF_STATUS_REG ) & 0x4 ) != 0x4 ) { ; }
+  JLINK_SYS_Report( "PHY is ready!" );
+}
 
 
+//******************************************************************************
+// ARM_OPPP100_Config
+//   Configures the processor PLLs to run in OPP100 mode.
+//
+//******************************************************************************
+void ARM_OPP100_Config()
+{
+  clk_in_mhz = GetInputClockFrequency();
+
+  if( clk_in_mhz == 24 )
+  {
+    MPU_PLL_Config( clk_in_mhz, 0, 25, 1 );
+    CORE_PLL_Config( clk_in_mhz, 2, 125, 10, 8, 4 );
+    DDR_PLL_Config( clk_in_mhz, 2, 50, 1 );
+    PER_PLL_Config( clk_in_mhz, 9, 400, 5 );
+    DISP_PLL_Config( clk_in_mhz, 0, 2, 1 );
+  }
+  else
+  {
+    JLINK_SYS_MessageBox( "Expected 24MHz clock for OPP100 configuration" );
+  }
+}
+
+
+//#################################################################################################
+//                              JLINK SCRIPT DLL API INJECTIONS
+//#################################################################################################
 int SetupTarget(void)
 {
   ARM_OPP100_Config();
   DDR3_EMIF_Config();
+
+  //JLINK_SYS_Report( "Starting test of RAM write" );
+  //tmp = 0x100000;
+  //JLINK_MEM_WriteU32( 0x100000, 0x12345678 );
+  //if( JLINK_MEM_ReadU32( tmp ) == 0x12345678 )
+  //{
+  //  JLINK_SYS_Report( "RAM test success!" );
+  //}
+  //else
+  //{
+  //  JLINK_SYS_Report( "RAM test failure!" );
+  //  return -1;
+  //}
 
   return 0;
 }
