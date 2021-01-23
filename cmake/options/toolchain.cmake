@@ -60,7 +60,6 @@ endif()
 # ====================================================
 # User variables
 set(ARTIFACTS_DIR ${CMAKE_BINARY_DIR}/../artifacts CACHE INTERNAL "" FORCE)
-set(LAST_BUILT_VERSION_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} CACHE INTERNAL "" FORCE )
 
 # CMake variables
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib CACHE INTERNAL "" FORCE)

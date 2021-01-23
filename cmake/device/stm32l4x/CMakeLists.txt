@@ -95,7 +95,7 @@ target_compile_definitions(${TARGET_OPTIONS} INTERFACE
 # Select the linker script for the supported device
 # ====================================================
 if(GENERATE_MAP_FILE)
-target_link_options(${TARGET_OPTIONS} INTERFACE "-Wl,-Map=${LAST_BUILT_VERSION_DIRECTORY}/${CMAKE_PROJECT_NAME}.map")
+target_link_options(${TARGET_OPTIONS} INTERFACE "-Wl,-Map=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_PROJECT_NAME}.map")
 endif()
 
 set(LINKER_DIR "${COMMON_TOOL_ROOT}/linker_scripts/stm32l4x")
