@@ -100,14 +100,14 @@ namespace Thor::LLD::{driver_name_upper}
 
   void Driver::clockEnable()
   {{
-    auto rcc = Thor::LLD::RCC::getPeripheralClock();
+    auto rcc = Thor::LLD::RCC::getPeriphClockCtrl();
     rcc->enableClock( Chimera::Peripheral::Type::PERIPH_{driver_name_upper}, mResourceIndex );
   }}
 
 
   void Driver::clockDisable()
   {{
-    auto rcc = Thor::LLD::RCC::getPeripheralClock();
+    auto rcc = Thor::LLD::RCC::getPeriphClockCtrl();
     rcc->disableClock( Chimera::Peripheral::Type::PERIPH_{driver_name_upper}, mResourceIndex );
   }}
 
