@@ -6,7 +6,7 @@
 #   prj_build_target
 #   prj_device_target
 #
-# 2020 | Brandon Braun | brandonbraun653@gmail.com
+# 2020-2021 | Brandon Braun | brandonbraun653@gmail.com
 # =============================================================================
 
 # =============================================================================
@@ -16,12 +16,21 @@
 # Only release build options
 set(BUILD_OPTIONS_REL prj_build_target_rel)
 add_library(${BUILD_OPTIONS_REL} INTERFACE)
+target_compile_definitions(${BUILD_OPTIONS_REL} INTERFACE "RELEASE")
 target_compile_options(${BUILD_OPTIONS_REL} INTERFACE -Os -g0)
 export(TARGETS ${BUILD_OPTIONS_REL} FILE "${PROJECT_BINARY_DIR}/DeviceTarget/${BUILD_OPTIONS_REL}.cmake")
+
+# Only release with debug build options
+set(BUILD_OPTIONS_REL_DBG prj_build_target_rel_dbg)
+add_library(${BUILD_OPTIONS_REL_DBG} INTERFACE)
+target_compile_definitions(${BUILD_OPTIONS_REL_DBG} INTERFACE "DBG_REL" "REL_DBG")
+target_compile_options(${BUILD_OPTIONS_REL_DBG} INTERFACE -O2 -g3 -ggdb)
+export(TARGETS ${BUILD_OPTIONS_REL_DBG} FILE "${PROJECT_BINARY_DIR}/DeviceTarget/${BUILD_OPTIONS_REL_DBG}.cmake")
 
 # Only debug build options
 set(BUILD_OPTIONS_DBG prj_build_target_dbg)
 add_library(${BUILD_OPTIONS_DBG} INTERFACE)
+target_compile_definitions(${BUILD_OPTIONS_DBG} INTERFACE "DEBUG")
 target_compile_options(${BUILD_OPTIONS_DBG} INTERFACE -O0 -g3 -ggdb)
 export(TARGETS ${BUILD_OPTIONS_DBG} FILE "${PROJECT_BINARY_DIR}/DeviceTarget/${BUILD_OPTIONS_DBG}.cmake")
 
@@ -76,16 +85,15 @@ target_link_options(${TARGET_OPTIONS} INTERFACE
 # ====================================================
 # Shared definitions
 # ====================================================
-target_compile_definitions(${TARGET_OPTIONS} INTERFACE CHIMERA_LITTLE_ENDIAN WIN32_LEAN_AND_MEAN)
+target_compile_definitions(${TARGET_OPTIONS} INTERFACE
+  CHIMERA_SIMULATOR
+  CHIMERA_LITTLE_ENDIAN
+  WIN32_LEAN_AND_MEAN
+)
 
 if(NATIVE_THREADS)
 target_compile_definitions(${TARGET_OPTIONS} INTERFACE USING_NATIVE_THREADS)
 endif()
-
-if(THOR_HLD_UNIT_TEST)
-target_compile_definitions(${TARGET_OPTIONS} INTERFACE THOR_HLD_TEST TARGET_LLD_MOCK)
-endif()
-
 
 # ====================================================
 # Export the target settings so other libs can build
