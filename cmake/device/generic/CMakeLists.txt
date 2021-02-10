@@ -60,7 +60,6 @@ target_compile_options(${TARGET_OPTIONS} INTERFACE
   -ffunction-sections
   -fmessage-length=0
   -fno-common
-  -fno-exceptions
   -m64
   $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>
 )
@@ -93,6 +92,7 @@ target_compile_definitions(${TARGET_OPTIONS} INTERFACE
 
 if(NATIVE_THREADS)
 target_compile_definitions(${TARGET_OPTIONS} INTERFACE USING_NATIVE_THREADS)
+target_link_libraries(${TARGET_OPTIONS} INTERFACE pthread)
 endif()
 
 # ====================================================
