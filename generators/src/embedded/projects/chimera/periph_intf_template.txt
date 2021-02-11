@@ -39,7 +39,7 @@ namespace Chimera::{driver_name_upper}
    *  Virtual class to facilitate easy mocking of the driver
    */
   class I{driver_name_upper} : virtual public HWInterface,
-               virtual public Chimera::Threading::LockableInterface
+               virtual public Chimera::Thread::LockableInterface
   {{
   public:
     virtual ~I{driver_name_upper}() = default;

@@ -31,7 +31,7 @@ namespace Thor::{driver_name_upper}
    *  Methods here at a minimum implement the interface specified in Chimera.
    *  Inheritance is avoided to minimize cost of virtual function lookup table.
    */
-  class Driver : public Chimera::Threading::Lockable
+  class Driver : public Chimera::Thread::Lockable
   {{
   public:
     Driver();
