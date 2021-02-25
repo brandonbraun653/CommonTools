@@ -6,7 +6,7 @@
 #   prj_build_target
 #   prj_device_target
 #
-# 2020 | Brandon Braun | brandonbraun653@gmail.com
+# 2020-2021 | Brandon Braun | brandonbraun653@gmail.com
 # =============================================================================
 
 # =============================================================================
@@ -45,18 +45,34 @@ add_library(${TARGET_OPTIONS} INTERFACE)
 
 # ====================================================
 # Shared compiler options
+#
+# -f Options:
+#   data-sections:            Splits data into own ELF sections for improved optimization
+#   freestanding:             Implies no standard library and entry may not be at main
+#   function-sections:        Same as data sections, but for functions
+#   no-common:                Ensure each global declaration occurs only once
+#   no-exceptions:            Disable exceptions
+#   stack-protector-strong:   Emits guards for functions that allocate on the stack
+#
+# -m Options:
+#   arch=armv7-a:             AM335x uses the ARMv7-a architecture
+#   tune=cortex-a8:           CPU core type to tune for
+#   float-abi=hard            Creates hardware FPU instructions for math
+#   fpu=vfpv3                 FPU hardware revision on the processor
 # ====================================================
 target_compile_options(${TARGET_OPTIONS} INTERFACE
   -fdata-sections
+  #-ffreestanding
   -ffunction-sections
-  -fmessage-length=0
   -fno-common
   -fno-exceptions
-  -mcpu=cortex-a8
+  -fstack-protector-strong
+  -march=armv7-a
   -mfloat-abi=hard
-  -mtune=cortex-a8
   -mfpu=vfpv3
-  -marm
+  -mtune=cortex-a8
+  -Wall
+  -Wextra
 )
 
 # ====================================================
@@ -66,18 +82,16 @@ target_link_options(${TARGET_OPTIONS} INTERFACE
   -Wl,--gc-sections
   -Wl,--print-memory-usage
   -mabi=aapcs
-  -mcpu=cortex-a8
+  -march=armv7-a
   -mfloat-abi=hard
-  -mtune=cortex-a8
   -mfpu=vfpv3
-  -marm
+  -mtune=cortex-a8
 )
 
 # ====================================================
 # Shared definitions
 # ====================================================
-target_compile_definitions(${TARGET_OPTIONS} INTERFACE
-)
+#target_compile_definitions(${TARGET_OPTIONS} INTERFACE)
 
 # ====================================================
 # Export the target settings so other libs can build

@@ -11,7 +11,7 @@
 # Exports:
 #   Toolchain::HAS_GCC_ARM_NONE_EABI
 #
-# 2020 | Brandon Braun | brandonbraun653@gmail.com
+# 2020-2021 | Brandon Braun | brandonbraun653@gmail.com
 # =============================================================================
 # ====================================================
 # Configure the toolchain paths
@@ -38,11 +38,6 @@ set(CMAKE_OBJCOPY "${ARM_NONE_EABI_ROOT}arm-none-eabi-objcopy")
 set(CMAKE_OBJDUMP "${ARM_NONE_EABI_ROOT}arm-none-eabi-objdump")
 set(CMAKE_RANLIB "${ARM_NONE_EABI_ROOT}arm-none-eabi-ranlib")
 set(CMAKE_STRIP "${ARM_NONE_EABI_ROOT}arm-none-eabi-strip")
-
-# Postfixes, suffixes, prefixes
-set(CMAKE_EXECUTABLE_SUFFIX ".elf")
-set(CMAKE_DEBUG_POSTFIX "_dbg")
-set(CMAKE_RELEASE_POSTFIX "_rel")
 
 # Needed for the test program to compile when --configuring
 set(CMAKE_EXE_LINKER_FLAGS "--specs=nosys.specs" CACHE INTERNAL "")
