@@ -62,7 +62,7 @@ add_library(${TARGET_OPTIONS} INTERFACE)
 # ====================================================
 target_compile_options(${TARGET_OPTIONS} INTERFACE
   -fdata-sections
-  #-ffreestanding
+  -ffreestanding
   -ffunction-sections
   -fno-common
   -fno-exceptions
@@ -86,6 +86,7 @@ target_link_options(${TARGET_OPTIONS} INTERFACE
   -mfloat-abi=hard
   -mfpu=vfpv3
   -mtune=cortex-a8
+  -specs=nano.specs
 )
 
 # ====================================================

@@ -713,19 +713,6 @@ int SetupTarget(void)
   ARM_OPP100_Config();
   DDR3_EMIF_Config();
 
-  //JLINK_SYS_Report( "Starting test of RAM write" );
-  //tmp = 0x100000;
-  //JLINK_MEM_WriteU32( 0x100000, 0x12345678 );
-  //if( JLINK_MEM_ReadU32( tmp ) == 0x12345678 )
-  //{
-  //  JLINK_SYS_Report( "RAM test success!" );
-  //}
-  //else
-  //{
-  //  JLINK_SYS_Report( "RAM test failure!" );
-  //  return -1;
-  //}
-
   return 0;
 }
 
