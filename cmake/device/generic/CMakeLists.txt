@@ -86,7 +86,6 @@ target_link_options(${TARGET_OPTIONS} INTERFACE
 # ====================================================
 target_compile_definitions(${TARGET_OPTIONS} INTERFACE
   CHIMERA_SIMULATOR
-  CHIMERA_LITTLE_ENDIAN
   WIN32_LEAN_AND_MEAN
 )
 
