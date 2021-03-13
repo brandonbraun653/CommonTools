@@ -140,7 +140,7 @@ function(gen_static_lib_variants)
   #----------------------------------------------------------
   set(options "")
   set(oneValueArgs TARGET EXPORT_DIR)
-  set(multiValueArgs SOURCES PRV_DEFINES PRV_LIBRARIES)
+  set(multiValueArgs SOURCES PRV_DEFINES PRV_LIBRARIES PRV_INCLUDES)
   cmake_parse_arguments(GEN_STATIC_LIB_VARIANTS "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
   #----------------------------------------------------------
