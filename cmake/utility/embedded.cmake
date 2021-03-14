@@ -115,6 +115,9 @@ endfunction()
 #   SOURCES
 #       Source files to be compiled into the library
 #
+#   DEPENDS
+#       Targets this static library depends on
+#
 #   PRV_INCLUDES
 #       Private include paths needed to build the module.
 #
@@ -140,7 +143,7 @@ function(gen_static_lib_variants)
   #----------------------------------------------------------
   set(options "")
   set(oneValueArgs TARGET EXPORT_DIR)
-  set(multiValueArgs SOURCES PRV_DEFINES PRV_LIBRARIES PRV_INCLUDES)
+  set(multiValueArgs SOURCES PRV_DEFINES PRV_LIBRARIES PRV_INCLUDES DEPENDENCIES)
   cmake_parse_arguments(GEN_STATIC_LIB_VARIANTS "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
   #----------------------------------------------------------
@@ -171,6 +174,11 @@ function(gen_static_lib_variants)
     # Link Libraries
     if(GEN_STATIC_LIB_VARIANTS_PRV_LIBRARIES)
       target_link_libraries(${lib_var_name} PRIVATE ${GEN_STATIC_LIB_VARIANTS_PRV_LIBRARIES})
+    endif()
+
+    # Dependencies
+    if(GEN_STATIC_LIB_VARIANTS_DEPENDENCIES)
+      add_dependencies(${lib_var_name} ${GEN_STATIC_LIB_VARIANTS_DEPENDENCIES})
     endif()
 
     # Always link against these, which defines critical target device compiler options such as the
