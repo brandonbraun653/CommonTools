@@ -118,6 +118,15 @@ endfunction()
 #   DEPENDS
 #       Targets this static library depends on
 #
+#   PUB_INCLUDES
+#       Public includes that should be propogated to all dependents
+#
+#   PUB_DEFINES
+#       Public preprocessor definitions that are propagated to all dependents
+#
+#   PUB_LIBRARIES
+#       Public libraries that are propagated to all dependents
+#
 #   PRV_INCLUDES
 #       Private include paths needed to build the module.
 #
@@ -143,7 +152,7 @@ function(gen_static_lib_variants)
   #----------------------------------------------------------
   set(options "")
   set(oneValueArgs TARGET EXPORT_DIR)
-  set(multiValueArgs SOURCES PRV_DEFINES PRV_LIBRARIES PRV_INCLUDES DEPENDENCIES)
+  set(multiValueArgs SOURCES PRV_DEFINES PRV_LIBRARIES PRV_INCLUDES PUB_DEFINES PUB_LIBRARIES PUB_INCLUDES DEPENDENCIES)
   cmake_parse_arguments(GEN_STATIC_LIB_VARIANTS "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
   #----------------------------------------------------------
@@ -166,14 +175,26 @@ function(gen_static_lib_variants)
       target_include_directories(${lib_var_name} PRIVATE ${GEN_STATIC_LIB_VARIANTS_PRV_INCLUDES})
     endif()
 
+    if(GEN_STATIC_LIB_VARIANTS_PUB_INCLUDES)
+      target_include_directories(${lib_var_name} PUBLIC ${GEN_STATIC_LIB_VARIANTS_PUB_INCLUDES})
+    endif()
+
     # Compiler preprocessor definitions
     if(GEN_STATIC_LIB_VARIANTS_PRV_DEFINES)
       target_compile_definitions(${lib_var_name} PRIVATE ${GEN_STATIC_LIB_VARIANTS_PRV_DEFINES})
     endif()
 
+    if(GEN_STATIC_LIB_VARIANTS_PUB_DEFINES)
+      target_compile_definitions(${lib_var_name} PUBLIC ${GEN_STATIC_LIB_VARIANTS_PUB_DEFINES})
+    endif()
+
     # Link Libraries
     if(GEN_STATIC_LIB_VARIANTS_PRV_LIBRARIES)
       target_link_libraries(${lib_var_name} PRIVATE ${GEN_STATIC_LIB_VARIANTS_PRV_LIBRARIES})
+    endif()
+
+    if(GEN_STATIC_LIB_VARIANTS_PUB_LIBRARIES)
+      target_link_libraries(${lib_var_name} PUBLIC ${GEN_STATIC_LIB_VARIANTS_PUB_LIBRARIES})
     endif()
 
     # Dependencies
