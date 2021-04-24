@@ -65,6 +65,13 @@ target_compile_options(${TARGET_OPTIONS} INTERFACE
   -mfloat-abi=hard
   -mfpu=fpv4-sp-d16
   -mthumb
+  -Wall
+  -Wextra
+
+  # Disables "compound assignment with 'volatile'-qualified left operand"
+  #   This shows up when compiling source code that modifies hardware registers.
+  #   Given that is the point of a lot of embedded things, that's a lot of warnings.
+  $<$<COMPILE_LANGUAGE:CXX>:-Wno-volatile>
 )
 
 # ====================================================
