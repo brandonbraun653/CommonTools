@@ -66,6 +66,7 @@ target_compile_options(${TARGET_OPTIONS} INTERFACE
   -mfpu=fpv4-sp-d16
   -mthumb
   -Wall
+  #-H
 
   # Disables "compound assignment with 'volatile'-qualified left operand"
   #   This shows up when compiling source code that modifies hardware registers.
