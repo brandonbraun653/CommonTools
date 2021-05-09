@@ -64,8 +64,9 @@ target_compile_options(${TARGET_OPTIONS} INTERFACE
   -mcpu=cortex-m4
   -mfloat-abi=hard
   -mfpu=fpv4-sp-d16
-  -mthumb
   -Wall
+
+  -fno-omit-frame-pointer
   #-H
 
   # Disables "compound assignment with 'volatile'-qualified left operand"
@@ -84,7 +85,6 @@ target_link_options(${TARGET_OPTIONS} INTERFACE
   -mcpu=cortex-m4
   -mfloat-abi=hard
   -mfpu=fpv4-sp-d16
-  -mthumb
   -specs=nano.specs
 )
 
