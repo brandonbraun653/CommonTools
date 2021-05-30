@@ -86,6 +86,11 @@ target_link_options(${TARGET_OPTIONS} INTERFACE
   -mfloat-abi=hard
   -mfpu=fpv4-sp-d16
   -specs=nano.specs
+
+  # Link in support for floating point printf
+  -lc
+  -lrdimon
+  -u _printf_float
 )
 
 # ====================================================
