@@ -85,6 +85,7 @@ target_link_options(${TARGET_OPTIONS} INTERFACE
 # Shared definitions
 # ====================================================
 target_compile_definitions(${TARGET_OPTIONS} INTERFACE
+  SIMULATOR
   CHIMERA_SIMULATOR
   WIN32_LEAN_AND_MEAN
 )
