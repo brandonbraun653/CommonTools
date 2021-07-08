@@ -210,6 +210,10 @@ function(gen_static_lib_variants)
     target_link_libraries(${lib_var_name} PRIVATE prj_device_target prj_build_target${VARIANT})
 
     # Export so other targets can use this
+    if(NOT GEN_STATIC_LIB_VARIANTS_EXPORT_DIR)
+      message(FATAL_ERROR "Static library generation function requires an EXPORT_DIR entry")
+    endif()
+
     export(TARGETS ${lib_var_name} FILE "${GEN_STATIC_LIB_VARIANTS_EXPORT_DIR}/${lib_var_name}.cmake")
   endfunction() # build_${GEN_STATIC_LIB_VARIANTS_TARGET}
 
