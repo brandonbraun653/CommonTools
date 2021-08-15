@@ -91,7 +91,7 @@ target_link_options(${TARGET_OPTIONS} INTERFACE
   -mfloat-abi=hard
   -mfpu=vfpv3
   -mtune=cortex-a8
-  -specs=nano.specs
+  #-specs=nano.specs
 )
 
 # ====================================================

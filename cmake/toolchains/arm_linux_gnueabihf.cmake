@@ -11,6 +11,10 @@
 # Exports:
 #   Toolchain::HAS_GCC_ARM_LINUX_EABIHF
 #
+# Install:
+#   sudo apt-get install gcc-arm-linux-gnueabihf
+#   sudo apt-get install g++-arm-linux-gnueabihf
+#
 # 2020 | Brandon Braun | brandonbraun653@gmail.com
 # =============================================================================
 # ====================================================
