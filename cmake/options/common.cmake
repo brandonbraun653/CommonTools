@@ -19,6 +19,7 @@ endif()
 # ====================================================
 option(COVERAGE "Enables/disables coverage generation" OFF)
 option(PRJ_BUILD_TYPE "Allows project to control individual library build type" OFF)
+option(ASAN "Enables/disables the address sanitizer (Can't be run with Valgrind)" OFF)
 
 # ===================================================================
 # Testing

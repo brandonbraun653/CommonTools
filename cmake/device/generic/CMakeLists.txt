@@ -64,14 +64,17 @@ target_compile_options(${TARGET_OPTIONS} INTERFACE
   $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>
 )
 
-# Enable Coverage Flags
 if(COVERAGE)
   target_compile_options(${TARGET_OPTIONS} INTERFACE --coverage)
-  target_link_options(${TARGET_OPTIONS} INTERFACE --coverage)
 endif()
 
-if(GTEST)
-  target_link_libraries(${TARGET_OPTIONS} INTERFACE gmock_inc gtest_inc)
+
+if(ASAN)
+  target_compile_options(${TARGET_OPTIONS} INTERFACE
+    -fsanitize=address
+    -fno-omit-frame-pointer
+    -Wno-format-security
+  )
 endif()
 
 # ====================================================
@@ -80,6 +83,18 @@ endif()
 target_link_options(${TARGET_OPTIONS} INTERFACE
   -Wl,--gc-sections
 )
+
+if(ASAN)
+  target_link_options(${TARGET_OPTIONS} INTERFACE -fsanitize=address )
+endif()
+
+if(COVERAGE)
+  target_link_options(${TARGET_OPTIONS} INTERFACE --coverage)
+endif()
+
+if(GTEST)
+  target_link_libraries(${TARGET_OPTIONS} INTERFACE gmock_inc gtest_inc)
+endif()
 
 # ====================================================
 # Shared definitions
