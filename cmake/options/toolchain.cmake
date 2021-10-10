@@ -10,8 +10,10 @@
 #
 # CommonTool Github: https://github.com/brandonbraun653/CommonTools.git
 #
-# 2020 | Brandon Braun | brandonbraun653@gmail.com
+# 2020-2021 | Brandon Braun | brandonbraun653@gmail.com
 # =============================================================================
+cmake_minimum_required(VERSION 3.18.0)
+
 # ====================================================
 # Validate requirements of this module
 # ====================================================
