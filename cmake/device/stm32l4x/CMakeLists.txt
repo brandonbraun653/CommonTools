@@ -17,7 +17,7 @@
 set(BUILD_OPTIONS_REL prj_build_target_rel)
 add_library(${BUILD_OPTIONS_REL} INTERFACE)
 target_compile_definitions(${BUILD_OPTIONS_REL} INTERFACE "RELEASE")
-target_compile_options(${BUILD_OPTIONS_REL} INTERFACE -Os -g0)
+target_compile_options(${BUILD_OPTIONS_REL} INTERFACE -Ofast -g0)
 export(TARGETS ${BUILD_OPTIONS_REL} FILE "${PROJECT_BINARY_DIR}/DeviceTarget/${BUILD_OPTIONS_REL}.cmake")
 
 # Only release with debug build options
@@ -70,7 +70,7 @@ target_compile_options(${TARGET_OPTIONS} INTERFACE
   # Disables "compound assignment with 'volatile'-qualified left operand"
   #   This shows up when compiling source code that modifies hardware registers.
   #   Given that is the point of a lot of embedded things, that's a lot of warnings.
-  # $<$<COMPILE_LANGUAGE:CXX>:-Wno-volatile>
+  $<$<COMPILE_LANGUAGE:CXX>:-Wno-volatile>
 )
 
 # ====================================================
