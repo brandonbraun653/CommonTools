@@ -8,7 +8,7 @@
 #include <Thor/cfg>
 #include <Thor/lld/interface/{driver_name_lower}/{driver_name_lower}_prv_data.hpp>
 
-#if defined( TARGET_STM32{family_upper} ) && defined( THOR_LLD_{driver_name_upper} )
+#if defined( TARGET_STM32{family_upper} ) && defined( THOR_{driver_name_upper} )
 
 namespace Thor::LLD::{driver_name_upper}
 {{

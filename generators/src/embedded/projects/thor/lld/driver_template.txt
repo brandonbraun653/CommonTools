@@ -16,7 +16,7 @@
 #include <Thor/lld/stm32{family_lower}x/{driver_name_lower}/hw_{driver_name_lower}_types.hpp>
 #include <Thor/lld/stm32{family_lower}x/rcc/hw_rcc_driver.hpp>
 
-#if defined( TARGET_STM32{family_upper} ) && defined( THOR_LLD_{driver_name_upper} )
+#if defined( TARGET_STM32{family_upper} ) && defined( THOR_{driver_name_upper} )
 
 namespace Thor::LLD::{driver_name_upper}
 {{

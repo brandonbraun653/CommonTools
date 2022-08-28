@@ -15,7 +15,7 @@
 #include <Thor/lld/interface/{driver_name_lower}/{driver_name_lower}_intf.hpp>
 #include <Thor/lld/interface/{driver_name_lower}/{driver_name_lower}_detail.hpp>
 
-#if defined( THOR_HLD_{driver_name_upper} )
+#if defined( THOR_{driver_name_upper} )
 
 namespace Thor::{driver_name_upper}
 {{
@@ -58,7 +58,7 @@ namespace Thor::{driver_name_upper}
     s_driver_initialized = ~Chimera::DRIVER_INITIALIZED_KEY;
     for ( size_t x = 0; x < NUM_DRIVERS; x++ )
     {{
-#if defined( THOR_HLD_TEST ) || defined( THOR_HLD_TEST_{driver_name_upper} )
+#if defined( THOR_TEST ) || defined( THOR_HLD_TEST_{driver_name_upper} )
       hld_shared[ x ] = HLD::Driver_rPtr( new HLD::Driver() );
 #else
       hld_shared[ x ] = HLD::Driver_rPtr( &hld_driver[ x ] );
@@ -80,7 +80,7 @@ namespace Thor::{driver_name_upper}
     /*------------------------------------------------
     Only allow clearing of local data during testing
     ------------------------------------------------*/
-#if defined( THOR_HLD_TEST ) || defined( THOR_HLD_TEST_{driver_name_upper} )
+#if defined( THOR_TEST ) || defined( THOR_HLD_TEST_{driver_name_upper} )
     s_driver_initialized = ~Chimera::DRIVER_INITIALIZED_KEY;
 
     for ( auto x = 0; x < NUM_DRIVERS; x++ )

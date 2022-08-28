@@ -9,7 +9,7 @@
 #include <Thor/lld/stm32{family_lower}x/{driver_name_lower}/hw_{driver_name_lower}_types.hpp>
 #include <Thor/lld/stm32{family_lower}x/{driver_name_lower}/variant/hw_{driver_name_lower}_register_stm32{family_lower}xxxx.hpp>
 
-#if defined( STM32{chip_upper}xx ) && defined( THOR_LLD_{driver_name_upper} )
+#if defined( STM32{chip_upper}xx ) && defined( THOR_{driver_name_upper} )
 
 namespace Thor::LLD::{driver_name_upper}
 {{

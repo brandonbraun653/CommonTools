@@ -59,7 +59,7 @@ namespace Chimera::{driver_name_upper}::Backend
 
   Chimera::Status_t registerDriver( Chimera::{driver_name_upper}::Backend::DriverConfig &registry )
   {{
-#if defined( THOR_HLD_{driver_name_upper} )
+#if defined( THOR_{driver_name_upper} )
     registry.isSupported = true;
     registry.getDriver   = getDriver;
     registry.initialize  = initialize;
