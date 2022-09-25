@@ -93,6 +93,7 @@ SECTIONS
 		PROVIDE(__data_start__ = _sdata);
 		*(.data)
 		*(.data*)
+		*(.thor_ram_code)
 		. = ALIGN(4);
 		_edata = .;
 
