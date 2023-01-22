@@ -56,8 +56,10 @@ add_library(${TARGET_OPTIONS} INTERFACE)
 # Shared compiler options
 # ====================================================
 target_compile_options(${TARGET_OPTIONS} INTERFACE
+  -fcallgraph-info=su,da
   -fdata-sections
   -ffunction-sections
+  -fstack-usage
   -fmessage-length=0
   -fno-common
   -fno-exceptions
@@ -105,9 +107,10 @@ endif()
 
 set(LINKER_DIR "${COMMON_TOOL_ROOT}/linker_scripts/stm32l4x")
 if(OVERRIDE_LINKER_SCRIPT)
-  message(STATUS "Overriding default linker script for STM32L4 device")
+  message(STATUS "Overriding default linker script for STM32L4 device with: ${PRJ_LINKER_SCRIPT}")
+  target_link_options(${TARGET_OPTIONS} INTERFACE "-T${PRJ_LINKER_SCRIPT}")
 else()
-    target_link_options(${TARGET_OPTIONS} INTERFACE "-T${LINKER_DIR}/${DEVICE_TARGET}_flash.lds")
+  target_link_options(${TARGET_OPTIONS} INTERFACE "-T${LINKER_DIR}/${DEVICE_TARGET}_flash.lds")
 endif()
 
 # ====================================================
