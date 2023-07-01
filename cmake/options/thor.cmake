@@ -71,6 +71,12 @@ set_property(CACHE THOR_VARIANT PROPERTY STRINGS
   ZI
 )
 
+set(THOR_IMPL "SIM" CACHE STRING "Detected STM32 implementation type")
+set_property(CACHE THOR_IMPL PROPERTY STRINGS
+  SIM
+  HW
+)
+
 # ====================================================
 # Sanitize the user's device input
 # ====================================================

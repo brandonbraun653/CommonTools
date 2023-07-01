@@ -6,7 +6,7 @@
 #   prj_build_target
 #   prj_device_target
 #
-# 2021 | Brandon Braun | brandonbraun653@gmail.com
+# 2021-2023 | Brandon Braun | brandonbraun653@gmail.com
 # =============================================================================
 
 # =============================================================================
@@ -53,68 +53,76 @@ set(TARGET_OPTIONS prj_device_target)
 add_library(${TARGET_OPTIONS} INTERFACE)
 
 # ====================================================
-# Shared compiler options
-# ====================================================
-target_compile_options(${TARGET_OPTIONS} INTERFACE
-  -fdata-sections
-  -ffunction-sections
-  -fmessage-length=0
-  -fno-common
-  -fno-exceptions
-  -mcpu=cortex-m4
-  -mfloat-abi=hard
-  -mfpu=fpv4-sp-d16
-  -Wall
-
-  -fno-omit-frame-pointer
-  #-H
-
-  # Disables "compound assignment with 'volatile'-qualified left operand"
-  #   This shows up when compiling source code that modifies hardware registers.
-  #   Given that is the point of a lot of embedded things, that's a lot of warnings.
-  $<$<COMPILE_LANGUAGE:CXX>:-Wno-volatile>
-)
-
-# ====================================================
-# Shared linker options
-# ====================================================
-target_link_options(${TARGET_OPTIONS} INTERFACE
-  -Wl,--gc-sections
-  -Wl,--print-memory-usage
-  -mabi=aapcs
-  -mcpu=cortex-m4
-  -mfloat-abi=hard
-  -mfpu=fpv4-sp-d16
-  -specs=nano.specs
-
-  # Link in support for floating point printf
-  -lc
-  -lrdimon
-  -u _printf_float
-)
-
-# ====================================================
 # Shared definitions
 # ====================================================
 target_compile_definitions(${TARGET_OPTIONS} INTERFACE
   STM32F446xx
-  EMBEDDED
   TARGET_STM32F4
 )
 
-# ====================================================
-# Select the linker script for the supported device
-# ====================================================
-if(GENERATE_MAP_FILE)
-target_link_options(${TARGET_OPTIONS} INTERFACE "-Wl,-Map=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_PROJECT_NAME}.map")
-endif()
+if (${THOR_IMPL} STREQUAL "HW")
+  # ====================================================
+  # Shared compiler options
+  # ====================================================
+  target_compile_options(${TARGET_OPTIONS} INTERFACE
+    -fdata-sections
+    -ffunction-sections
+    -fmessage-length=0
+    -fno-common
+    -fno-exceptions
+    -mcpu=cortex-m4
+    -mfloat-abi=hard
+    -mfpu=fpv4-sp-d16
+    -Wall
 
-set(LINKER_DIR "${COMMON_TOOL_ROOT}/linker_scripts/stm32f4x")
-if(OVERRIDE_LINKER_SCRIPT)
-  message(STATUS "Overriding default linker script for STM32F4 device")
+    -fno-omit-frame-pointer
+    #-H
+
+    # Disables "compound assignment with 'volatile'-qualified left operand"
+    #   This shows up when compiling source code that modifies hardware registers.
+    #   Given that is the point of a lot of embedded things, that's a lot of warnings.
+    $<$<COMPILE_LANGUAGE:CXX>:-Wno-volatile>
+  )
+
+  # ====================================================
+  # Shared linker options
+  # ====================================================
+  target_link_options(${TARGET_OPTIONS} INTERFACE
+    -Wl,--gc-sections
+    -Wl,--print-memory-usage
+    -mabi=aapcs
+    -mcpu=cortex-m4
+    -mfloat-abi=hard
+    -mfpu=fpv4-sp-d16
+    -specs=nano.specs
+
+    # Link in support for floating point printf
+    -lc
+    -lrdimon
+    -u _printf_float
+  )
+  
+  target_compile_definitions(${TARGET_OPTIONS} INTERFACE
+    EMBEDDED
+  )
+
+  # ====================================================
+  # Select the linker script for the supported device
+  # ====================================================
+  if(GENERATE_MAP_FILE)
+  target_link_options(${TARGET_OPTIONS} INTERFACE "-Wl,-Map=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_PROJECT_NAME}.map")
+  endif()
+
+  set(LINKER_DIR "${COMMON_TOOL_ROOT}/linker_scripts/stm32f4x")
+  if(OVERRIDE_LINKER_SCRIPT)
+    message(STATUS "Overriding default linker script for STM32F4 device")
+  else()
+      target_link_options(${TARGET_OPTIONS} INTERFACE "-T${LINKER_DIR}/${DEVICE_TARGET}_flash.lds")
+  endif()
+
 else()
-    target_link_options(${TARGET_OPTIONS} INTERFACE "-T${LINKER_DIR}/${DEVICE_TARGET}_flash.lds")
-endif()
+  message("THOR_IMPL: ${THOR_IMPL}. Using default compiler/linker options.")
+endif() # THOR_IMPL == HW
 
 # ====================================================
 # Export the target settings so other libs can build
