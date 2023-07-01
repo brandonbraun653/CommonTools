@@ -120,8 +120,10 @@ if (${THOR_IMPL} STREQUAL "HW")
       target_link_options(${TARGET_OPTIONS} INTERFACE "-T${LINKER_DIR}/${DEVICE_TARGET}_flash.lds")
   endif()
 
-else()
-  message("THOR_IMPL: ${THOR_IMPL}. Using default compiler/linker options.")
+else() # THOR_IMPL == SIM
+  target_compile_options(${TARGET_OPTIONS} INTERFACE
+    -no-pie 
+  )
 endif() # THOR_IMPL == HW
 
 # ====================================================

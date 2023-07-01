@@ -9,22 +9,6 @@ set(SUPPORTED_CHIPS
   STM32F446RE
 )
 
-#
-set(EMBEDDED_TARGET
-  FULL  # Selects both HLD & LLD embedded drivers
-  HLD   # Selects only the HLD driver
-  LLD   # Selects only the LLD driver
-)
-
-set(VIRTUAL_TARGET "SIM" CACHE STRING ""
-  SIM        # Simulates
-  MOCK
-  HLD_SIM
-  HLD_MOCK
-  LLD_SIM
-  LLD_MOCK
-)
-
 # ====================================================
 # Regex matchers for parsing the device string
 # ====================================================
@@ -137,21 +121,26 @@ if(${DEVICE_TARGET} MATCHES ${_DEV_REGEX})
   # A nice success message. Yay! Set a few config vars.
   # ====================================================
   message(STATUS "Target device ${DEVICE_TARGET} supported")
-  set(Thor::Embedded TRUE CACHE INTERNAL "Whether or not Thor will run on an embedded device" FORCE)
+  message(STATUS "Thor Family: ${THOR_FAMILY}")
+  message(STATUS "Thor Chip: ${THOR_CHIP}")
+  message(STATUS "Thor Variant: ${THOR_VARIANT}")
+  message(STATUS "Thor Implementation: ${THOR_IMPL}")
+
+  if(${THOR_IMPL} MATCHES "SIM")
+    set(Thor::Embedded FALSE CACHE INTERNAL "Whether or not Thor will run on an embedded device" FORCE)
+  else()
+    set(Thor::Embedded TRUE CACHE INTERNAL "Whether or not Thor will run on an embedded device" FORCE)
+  endif()
 
   # ====================================================
   # Pull in the device target compiler/linker options
   # ====================================================
-  if(${THOR_FAMILY} MATCHES "^L4$")
+  if(${THOR_FAMILY} MATCHES "^L4$" AND ${THOR_IMPL} MATCHES "HW")
     add_subdirectory("${COMMON_TOOL_ROOT}/cmake/device/stm32l4x" ${PROJECT_BINARY_DIR}/DeviceTarget)
-  elseif(${THOR_FAMILY} MATCHES "^F4$")
+  elseif(${THOR_FAMILY} MATCHES "^F4$" AND ${THOR_IMPL} MATCHES "HW")
     add_subdirectory("${COMMON_TOOL_ROOT}/cmake/device/stm32f4x" ${PROJECT_BINARY_DIR}/DeviceTarget)
   else()
-    # Add more here
+    message(STATUS "Using generic device compiler options")
+    add_subdirectory("${COMMON_TOOL_ROOT}/cmake/device/generic" ${PROJECT_BINARY_DIR}/DeviceTarget)
   endif()
-else() # Are some kind of simulated device
-  message(STATUS "Using simulated Thor device support")
-  add_subdirectory("${COMMON_TOOL_ROOT}/cmake/device/generic" ${PROJECT_BINARY_DIR}/DeviceTarget)
 endif()
-
-
