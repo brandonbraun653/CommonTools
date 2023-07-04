@@ -82,6 +82,7 @@ endif()
 # ====================================================
 target_link_options(${TARGET_OPTIONS} INTERFACE
   -Wl,--gc-sections
+  -Wl,--start-group
 )
 
 if(ASAN)
