@@ -101,7 +101,7 @@ if (${THOR_IMPL} STREQUAL "HW")
     -lrdimon
     -u _printf_float
   )
-  
+
   target_compile_definitions(${TARGET_OPTIONS} INTERFACE
     EMBEDDED
   )
@@ -122,7 +122,7 @@ if (${THOR_IMPL} STREQUAL "HW")
 
 else() # THOR_IMPL == SIM
   target_compile_options(${TARGET_OPTIONS} INTERFACE
-    -no-pie 
+    -no-pie
   )
 endif() # THOR_IMPL == HW
 
