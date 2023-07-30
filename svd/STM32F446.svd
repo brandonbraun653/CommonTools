@@ -14,7 +14,7 @@ xs:noNamespaceSchemaLocation="CMSIS-SVD_Schema_1_1.xsd">
     <fpuPresent>false</fpuPresent>
     <nvicPrioBits>3</nvicPrioBits>
     <vendorSystickConfig>false</vendorSystickConfig>
-  </cpu>  
+  </cpu>
   <!--Bus Interface Properties-->
   <!--Cortex-M4 is byte addressable-->
   <addressUnitBits>8</addressUnitBits>
@@ -54087,33 +54087,6 @@ xs:noNamespaceSchemaLocation="CMSIS-SVD_Schema_1_1.xsd">
               <bitOffset>0</bitOffset>
               <bitWidth>2</bitWidth>
             </field>
-            <field>
-              <name>VSWITCH</name>
-              <description>Voltage switch sequence start. This bit
-              is used to start the timing critical section of the
-              voltage switch sequence:</description>
-              <bitOffset>2</bitOffset>
-              <bitWidth>1</bitWidth>
-            </field>
-            <field>
-              <name>VSWITCHEN</name>
-              <description>Voltage switch procedure enable. This
-              bit can only be written by firmware when CPSM is
-              disabled (CPSMEN = 0). This bit is used to stop the
-              SDMMC_CK after the voltage switch command
-              response:</description>
-              <bitOffset>3</bitOffset>
-              <bitWidth>1</bitWidth>
-            </field>
-            <field>
-              <name>DIRPOL</name>
-              <description>Data and command direction signals
-              polarity selection. This bit can only be written when
-              the SDMMC is in the power-off state (PWRCTRL =
-              00).</description>
-              <bitOffset>4</bitOffset>
-              <bitWidth>1</bitWidth>
-            </field>
           </fields>
         </register>
         <register>
@@ -54137,7 +54110,16 @@ xs:noNamespaceSchemaLocation="CMSIS-SVD_Schema_1_1.xsd">
               SDMMCCLK / [2 * CLKDIV]. 0xx: etc.. xxx:
               etc..</description>
               <bitOffset>0</bitOffset>
-              <bitWidth>10</bitWidth>
+              <bitWidth>8</bitWidth>
+            </field>
+            <field>
+              <name>CLKEN</name>
+              <description>Clock enable bit. This bit can only be
+              written when the CPSM and DPSM are not active
+              (CPSMACT = 0 and DPSMACT = 0). This bit enables the
+              SDMMC_CK output.</description>
+              <bitOffset>8</bitOffset>
+              <bitWidth>1</bitWidth>
             </field>
             <field>
               <name>PWRSAV</name>
@@ -54146,7 +54128,19 @@ xs:noNamespaceSchemaLocation="CMSIS-SVD_Schema_1_1.xsd">
               active (CPSMACT = 0 and DPSMACT = 0) For power
               saving, the SDMMC_CK clock output can be disabled
               when the bus is idle by setting PWRSAV:</description>
-              <bitOffset>12</bitOffset>
+              <bitOffset>9</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+            <field>
+              <name>BYPASS</name>
+              <description>Bypass the clock divide factor. This bit
+              can only be written when the CPSM and DPSM are not
+              active (CPSMACT = 0 and DPSMACT = 0). This bit can be
+              set only if SDMMCCLK = 0x0. This bit allows the SDMMC
+              clock to be generated directly from the SDMMCCLK
+              internal clock divided by CLKDIV (no
+              prescaler).</description>
+              <bitOffset>10</bitOffset>
               <bitWidth>1</bitWidth>
             </field>
             <field>
@@ -54154,7 +54148,7 @@ xs:noNamespaceSchemaLocation="CMSIS-SVD_Schema_1_1.xsd">
               <description>Wide bus mode enable bit This bit can
               only be written when the CPSM and DPSM are not active
               (CPSMACT = 0 and DPSMACT = 0)</description>
-              <bitOffset>14</bitOffset>
+              <bitOffset>11</bitOffset>
               <bitWidth>2</bitWidth>
             </field>
             <field>
@@ -54173,7 +54167,7 @@ xs:noNamespaceSchemaLocation="CMSIS-SVD_Schema_1_1.xsd">
               rising edge. - Data changed on the SDMMC_CK falling
               edge succeeding a SDMMC_CK edge. - SDMMC_CK edge
               occurs on SDMMCCLK rising edge.</description>
-              <bitOffset>16</bitOffset>
+              <bitOffset>13</bitOffset>
               <bitWidth>1</bitWidth>
             </field>
             <field>
@@ -54184,38 +54178,8 @@ xs:noNamespaceSchemaLocation="CMSIS-SVD_Schema_1_1.xsd">
               flow control is enabled, the meaning of the TXFIFOE
               and RXFIFOF flags change, please see SDMMC status
               register definition in Section56.8.11.</description>
-              <bitOffset>17</bitOffset>
+              <bitOffset>14</bitOffset>
               <bitWidth>1</bitWidth>
-            </field>
-            <field>
-              <name>DDR</name>
-              <description>Data rate signaling selection This bit
-              can only be written when the CPSM and DPSM are not
-              active (CPSMACT = 0 and DPSMACT = 0) DDR rate shall
-              only be selected with 4-bit or 8-bit wide bus mode.
-              (WIDBUS &amp;gt; 00). DDR = 1 has no effect when
-              WIDBUS = 00 (1-bit wide bus). DDR rate shall only be
-              selected with clock division &amp;gt;1. (CLKDIV
-              &amp;gt; 0)</description>
-              <bitOffset>18</bitOffset>
-              <bitWidth>1</bitWidth>
-            </field>
-            <field>
-              <name>BUSSPEED</name>
-              <description>Bus speed mode selection between DS, HS,
-              SDR12, SDR25 and SDR50, DDR50, SDR104. This bit can
-              only be written when the CPSM and DPSM are not active
-              (CPSMACT = 0 and DPSMACT = 0)</description>
-              <bitOffset>19</bitOffset>
-              <bitWidth>1</bitWidth>
-            </field>
-            <field>
-              <name>SELCLKRX</name>
-              <description>Receive clock selection. These bits can
-              only be written when the CPSM and DPSM are not active
-              (CPSMACT = 0 and DPSMACT = 0)</description>
-              <bitOffset>20</bitOffset>
-              <bitWidth>2</bitWidth>
             </field>
           </fields>
         </register>
@@ -54251,7 +54215,7 @@ xs:noNamespaceSchemaLocation="CMSIS-SVD_Schema_1_1.xsd">
           a card as part of a command message. The command type
           bits control the command path state machine
           (CPSM).</description>
-          <addressOffset>0xC</addressOffset>
+          <addressOffset>0x0C</addressOffset>
           <size>0x20</size>
           <access>read-write</access>
           <resetValue>0x00000000</resetValue>
@@ -54372,12 +54336,32 @@ xs:noNamespaceSchemaLocation="CMSIS-SVD_Schema_1_1.xsd">
           </fields>
         </register>
         <register>
+          <name>SDMMC_RESPCMDR</name>
+          <displayName>SDMMC_RESPCMDR</displayName>
+          <description>The SDIO_RESPCMD register contains the command index field of the last command
+          response received. If the command response transmission does not contain the command
+          index field (long or OCR response), the RESPCMD field is unknown, although it must
+          contain 111111b (the value of the reserved field from the response).</description>
+          <addressOffset>0x10</addressOffset>
+          <size>0x20</size>
+          <access>read-only</access>
+          <resetValue>0x00000000</resetValue>
+          <fields>
+            <field>
+              <name>RESPCMD</name>
+              <description>Response command index</description>
+              <bitOffset>0</bitOffset>
+              <bitWidth>6</bitWidth>
+            </field>
+          </fields>
+        </register>
+        <register>
           <name>SDMMC_RESP1R</name>
           <displayName>SDMMC_RESP1R</displayName>
           <description>The SDMMC_RESP1/2/3/4R registers contain the
           status of a card, which is part of the received
           response.</description>
-          <addressOffset>0x10</addressOffset>
+          <addressOffset>0x14</addressOffset>
           <size>0x20</size>
           <access>read-only</access>
           <resetValue>0x00000000</resetValue>
@@ -54396,7 +54380,7 @@ xs:noNamespaceSchemaLocation="CMSIS-SVD_Schema_1_1.xsd">
           <description>The SDMMC_RESP1/2/3/4R registers contain the
           status of a card, which is part of the received
           response.</description>
-          <addressOffset>0x14</addressOffset>
+          <addressOffset>0x18</addressOffset>
           <size>0x20</size>
           <access>read-only</access>
           <resetValue>0x00000000</resetValue>
@@ -54415,7 +54399,7 @@ xs:noNamespaceSchemaLocation="CMSIS-SVD_Schema_1_1.xsd">
           <description>The SDMMC_RESP1/2/3/4R registers contain the
           status of a card, which is part of the received
           response.</description>
-          <addressOffset>0x18</addressOffset>
+          <addressOffset>0x1C</addressOffset>
           <size>0x20</size>
           <access>read-only</access>
           <resetValue>0x00000000</resetValue>
@@ -54434,7 +54418,7 @@ xs:noNamespaceSchemaLocation="CMSIS-SVD_Schema_1_1.xsd">
           <description>The SDMMC_RESP1/2/3/4R registers contain the
           status of a card, which is part of the received
           response.</description>
-          <addressOffset>0x1C</addressOffset>
+          <addressOffset>0x20</addressOffset>
           <size>0x20</size>
           <access>read-only</access>
           <resetValue>0x00000000</resetValue>
