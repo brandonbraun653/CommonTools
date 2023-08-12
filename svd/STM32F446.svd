@@ -55282,144 +55282,22 @@ xs:noNamespaceSchemaLocation="CMSIS-SVD_Schema_1_1.xsd">
           </fields>
         </register>
         <register>
-          <name>SDMMC_IDMACTRLR</name>
-          <displayName>SDMMC_IDMACTRLR</displayName>
-          <description>The receive and transmit FIFOs can be read
-          or written as 32-bit wide registers. The FIFOs contain 32
-          entries on 32 sequential addresses. This allows the CPU
-          to use its load and store multiple operands to read
-          from/write to the FIFO.</description>
-          <addressOffset>0x50</addressOffset>
-          <size>0x20</size>
-          <access>read-write</access>
-          <resetValue>0x00000000</resetValue>
-          <fields>
-            <field>
-              <name>IDMAEN</name>
-              <description>IDMA enable This bit can only be written
-              by firmware when DPSM is inactive (DPSMACT =
-              0).</description>
-              <bitOffset>0</bitOffset>
-              <bitWidth>1</bitWidth>
-            </field>
-            <field>
-              <name>IDMABMODE</name>
-              <description>Buffer mode selection. This bit can only
-              be written by firmware when DPSM is inactive (DPSMACT
-              = 0).</description>
-              <bitOffset>1</bitOffset>
-              <bitWidth>1</bitWidth>
-            </field>
-            <field>
-              <name>IDMABACT</name>
-              <description>Double buffer mode active buffer
-              indication This bit can only be written by firmware
-              when DPSM is inactive (DPSMACT = 0). When IDMA is
-              enabled this bit is toggled by
-              hardware.</description>
-              <bitOffset>2</bitOffset>
-              <bitWidth>1</bitWidth>
-            </field>
-          </fields>
-        </register>
-        <register>
-          <name>SDMMC_IDMABSIZER</name>
-          <displayName>SDMMC_IDMABSIZER</displayName>
-          <description>The SDMMC_IDMABSIZER register contains the
-          buffers size when in double buffer
-          configuration.</description>
-          <addressOffset>0x54</addressOffset>
-          <size>0x20</size>
-          <access>read-write</access>
-          <resetValue>0x00000000</resetValue>
-          <fields>
-            <field>
-              <name>IDMABNDT</name>
-              <description>Number of transfers per buffer. This
-              8-bit value shall be multiplied by 8 to get the size
-              of the buffer in 32-bit words and by 32 to get the
-              size of the buffer in bytes. Example: IDMABNDT =
-              0x01: buffer size = 8 words = 32 bytes. These bits
-              can only be written by firmware when DPSM is inactive
-              (DPSMACT = 0).</description>
-              <bitOffset>5</bitOffset>
-              <bitWidth>8</bitWidth>
-            </field>
-          </fields>
-        </register>
-        <register>
-          <name>SDMMC_IDMABASE0R</name>
-          <displayName>SDMMC_IDMABASE0R</displayName>
-          <description>The SDMMC_IDMABASE0R register contains the
-          memory buffer base address in single buffer configuration
-          and the buffer 0 base address in double buffer
-          configuration.</description>
-          <addressOffset>0x58</addressOffset>
-          <size>0x20</size>
-          <access>read-write</access>
-          <resetValue>0x00000000</resetValue>
-          <fields>
-            <field>
-              <name>IDMABASE0</name>
-              <description>Buffer 0 memory base address bits
-              [31:2], shall be word aligned (bit [1:0] are always 0
-              and read only). This register can be written by
-              firmware when DPSM is inactive (DPSMACT = 0), and can
-              dynamically be written by firmware when DPSM active
-              (DPSMACT = 1) and memory buffer 0 is inactive
-              (IDMABACT = 1).</description>
-              <bitOffset>0</bitOffset>
-              <bitWidth>32</bitWidth>
-            </field>
-          </fields>
-        </register>
-        <register>
-          <name>SDMMC_IDMABASE1R</name>
-          <displayName>SDMMC_IDMABASE1R</displayName>
-          <description>The SDMMC_IDMABASE1R register contains the
-          double buffer configuration second buffer memory base
-          address.</description>
-          <addressOffset>0x5C</addressOffset>
-          <size>0x20</size>
-          <access>read-write</access>
-          <resetValue>0x00000000</resetValue>
-          <fields>
-            <field>
-              <name>IDMABASE1</name>
-              <description>Buffer 1 memory base address, shall be
-              word aligned (bit [1:0] are always 0 and read only).
-              This register can be written by firmware when DPSM is
-              inactive (DPSMACT = 0), and can dynamically be
-              written by firmware when DPSM active (DPSMACT = 1)
-              and memory buffer 1 is inactive (IDMABACT =
-              0).</description>
-              <bitOffset>0</bitOffset>
-              <bitWidth>32</bitWidth>
-            </field>
-          </fields>
-        </register>
-        <register>
-          <name>SDMMC_RESPCMDR</name>
-          <displayName>SDMMC_RESPCMDR</displayName>
-          <description>The SDMMC_RESPCMDR register contains the
-          command index field of the last command response
-          received. If the command response transmission does not
-          contain the command index field (long or OCR response),
-          the RESPCMD field is unknown, although it must contain
-          111111b (the value of the reserved field from the
-          response).</description>
-          <addressOffset>0x60</addressOffset>
+          <name>SDMMC_FIFOCNT</name>
+          <displayName>SDMMC_FIFOCNT</displayName>
+          <description>The SDMMC_FIFOCNT register contains the
+          remaining number of words to be written to or read from
+          the FIFO.</description>
+          <addressOffset>0x48</addressOffset>
           <size>0x20</size>
           <access>read-only</access>
           <resetValue>0x00000000</resetValue>
           <fields>
             <field>
-              <name>RESPCMD</name>
-              <description>Response command index Read-only bit
-              field. Contains the command index of the last command
-              response received.</description>
+              <name>FIFOCOUNT</name>
+              <description>Remaining number of words to be written
+              to or read from the FIFO.</description>
               <bitOffset>0</bitOffset>
-              <bitWidth>6</bitWidth>
+              <bitWidth>24</bitWidth>
             </field>
           </fields>
         </register>
