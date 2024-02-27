@@ -136,8 +136,10 @@ if(${DEVICE_TARGET} MATCHES ${_DEV_REGEX})
   # Pull in the device target compiler/linker options
   # ====================================================
   if(${THOR_FAMILY} MATCHES "^L4$" AND ${THOR_IMPL} MATCHES "HW")
+    message(STATUS "Using STM32L4 device compiler options")
     add_subdirectory("${COMMON_TOOL_ROOT}/cmake/device/stm32l4x" ${PROJECT_BINARY_DIR}/DeviceTarget)
   elseif(${THOR_FAMILY} MATCHES "^F4$" AND ${THOR_IMPL} MATCHES "HW")
+    message(STATUS "Using STM32F4 device compiler options")
     add_subdirectory("${COMMON_TOOL_ROOT}/cmake/device/stm32f4x" ${PROJECT_BINARY_DIR}/DeviceTarget)
   else()
     message(STATUS "Using generic device compiler options")
