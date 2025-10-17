@@ -94,7 +94,7 @@ if(COVERAGE)
 endif()
 
 if(GTEST)
-  target_link_libraries(${TARGET_OPTIONS} INTERFACE gmock_inc gtest_inc)
+  target_link_libraries(${TARGET_OPTIONS} INTERFACE gmock gtest)
 endif()
 
 # ====================================================

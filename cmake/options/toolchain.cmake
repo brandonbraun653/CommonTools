@@ -12,7 +12,7 @@
 #
 # 2020-2021 | Brandon Braun | brandonbraun653@gmail.com
 # =============================================================================
-cmake_minimum_required(VERSION 3.18.0)
+cmake_minimum_required(VERSION 3.25.0)
 
 # ====================================================
 # Validate requirements of this module

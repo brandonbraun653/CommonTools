@@ -1,7 +1,7 @@
 #------------------------------------------------------------------------------
 # Embedded Utilities
 #------------------------------------------------------------------------------
-cmake_minimum_required(VERSION 3.18.0)
+cmake_minimum_required(VERSION 3.25.0)
 
 #------------------------------------------------------------------------------
 # Function: add_elf2bin_dependency
@@ -95,8 +95,8 @@ function(gen_intf_lib)
     target_link_libraries(${GEN_INTF_LIB_TARGET} INTERFACE ${GEN_INTF_LIB_INTF_LIBRARIES})
   endif()
 
-  # Export so other targets can use this
-  export(TARGETS ${GEN_INTF_LIB_TARGET} FILE "${GEN_INTF_LIB_EXPORT_DIR}/${GEN_INTF_LIB_TARGET}.cmake")
+  # Export so other targets can use this (skip if target depends on non-exportable dependencies)
+  export_target_safely(${GEN_INTF_LIB_TARGET} "${GEN_INTF_LIB_EXPORT_DIR}/${GEN_INTF_LIB_TARGET}.cmake")
 endfunction()
 
 
@@ -163,7 +163,7 @@ function(gen_static_lib_variants)
     # The name your project should reference
     #----------------------------------------------------------
     set(lib_var_name "${GEN_STATIC_LIB_VARIANTS_TARGET}${VARIANT}")
-    message("Generating target: ${lib_var_name}")
+    # message("Generating target: ${lib_var_name}")
 
     #----------------------------------------------------------
     # Create the interface library with the desired properties
@@ -209,12 +209,12 @@ function(gen_static_lib_variants)
     # See the target device definitions in the CommonTool/cmake/device folders.
     target_link_libraries(${lib_var_name} PRIVATE prj_device_target prj_build_target${VARIANT})
 
-    # Export so other targets can use this
+    # Export so other targets can use this (skip if target depends on non-exportable dependencies)
     if(NOT GEN_STATIC_LIB_VARIANTS_EXPORT_DIR)
       message(FATAL_ERROR "Static library generation function requires an EXPORT_DIR entry")
     endif()
 
-    export(TARGETS ${lib_var_name} FILE "${GEN_STATIC_LIB_VARIANTS_EXPORT_DIR}/${lib_var_name}.cmake")
+    export_target_safely(${lib_var_name} "${GEN_STATIC_LIB_VARIANTS_EXPORT_DIR}/${lib_var_name}.cmake")
   endfunction() # build_${GEN_STATIC_LIB_VARIANTS_TARGET}
 
   #----------------------------------------------------------
@@ -266,7 +266,7 @@ function(gen_intf_lib_variants)
     # The name your project should reference
     #----------------------------------------------------------
     set(lib_var_name "${GEN_INTF_LIB_VARIANTS_TARGET}${VARIANT}")
-    message("Generating target: ${lib_var_name}")
+    # message("Generating target: ${lib_var_name}")
 
     #----------------------------------------------------------
     # Add the variant flag to each library target
@@ -281,7 +281,7 @@ function(gen_intf_lib_variants)
     #----------------------------------------------------------
     add_library(${lib_var_name} INTERFACE)
     target_link_libraries(${lib_var_name} INTERFACE "${renamed_libs${VARIANT}}")
-    export(TARGETS ${lib_var_name} FILE "${GEN_INTF_LIB_VARIANTS_EXPORT_DIR}/${lib_var_name}.cmake")
+    export_target_safely(${lib_var_name} "${GEN_INTF_LIB_VARIANTS_EXPORT_DIR}/${lib_var_name}.cmake")
   endfunction()
 
   #----------------------------------------------------------
@@ -289,3 +289,66 @@ function(gen_intf_lib_variants)
   #----------------------------------------------------------
   add_target_variants(build_${GEN_INTF_LIB_VARIANTS_TARGET})
 endfunction() #gen_intf_lib_variants
+
+
+#------------------------------------------------------------------------------
+# FUNCTION: export_target_safely
+#
+#   Safely exports a target, checking if it depends on non-exportable targets
+#   like those from FetchContent (GoogleTest, etc.)
+#
+# INTERFACE:
+#   TARGET_NAME
+#       The name of the target to export
+#
+#   EXPORT_FILE
+#       The file to export to
+#
+#------------------------------------------------------------------------------
+function(export_target_safely TARGET_NAME EXPORT_FILE)
+  # Check if target exists
+  if(NOT TARGET ${TARGET_NAME})
+    message(WARNING "Cannot export non-existent target: ${TARGET_NAME}")
+    return()
+  endif()
+
+  # Get all linked libraries (recursive)
+  get_target_property(target_type ${TARGET_NAME} TYPE)
+  if(target_type STREQUAL "INTERFACE_LIBRARY")
+    get_target_property(linked_libs ${TARGET_NAME} INTERFACE_LINK_LIBRARIES)
+  else()
+    get_target_property(linked_libs ${TARGET_NAME} LINK_LIBRARIES)
+    if(NOT linked_libs)
+      get_target_property(linked_libs ${TARGET_NAME} INTERFACE_LINK_LIBRARIES)
+    endif()
+  endif()
+
+  # Check for non-exportable dependencies
+  set(non_exportable_found FALSE)
+  if(linked_libs)
+    foreach(lib ${linked_libs})
+      # Skip keywords and generator expressions
+      if(lib MATCHES "^\\$<" OR lib MATCHES "^-" OR lib MATCHES "^PRIVATE$" OR lib MATCHES "^INTERFACE$")
+        continue()
+      endif()
+
+      # Check if this is a target that might not be exportable
+      if(TARGET ${lib})
+        get_target_property(lib_source ${lib} SOURCE_DIR)
+        # If it's from FetchContent/_deps, it's likely not exportable
+        if(lib_source AND lib_source MATCHES "_deps")
+          set(non_exportable_found TRUE)
+          message(STATUS "Target ${TARGET_NAME} depends on non-exportable target ${lib} from FetchContent - skipping export")
+          break()
+        endif()
+      endif()
+    endforeach()
+  endif()
+
+  # Export if safe to do so
+  if(NOT non_exportable_found)
+    export(TARGETS ${TARGET_NAME} FILE "${EXPORT_FILE}")
+  else()
+    message(STATUS "Skipping export of ${TARGET_NAME} due to non-exportable dependencies")
+  endif()
+endfunction()
