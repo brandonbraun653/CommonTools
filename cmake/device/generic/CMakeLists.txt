@@ -37,7 +37,6 @@ export(TARGETS ${BUILD_OPTIONS_DBG} FILE "${PROJECT_BINARY_DIR}/DeviceTarget/${B
 # High level target that switches based on rel/dbg configuration
 set(BUILD_OPTIONS prj_build_target)
 add_library(${BUILD_OPTIONS} INTERFACE)
-target_compile_options(${BUILD_OPTIONS} INTERFACE $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>)
 target_link_libraries(${BUILD_OPTIONS} INTERFACE $<$<CONFIG:DEBUG>:${BUILD_OPTIONS_DBG}> $<$<CONFIG:RELEASE>:${BUILD_OPTIONS_REL}>)
 export(TARGETS ${BUILD_OPTIONS} FILE "${PROJECT_BINARY_DIR}/DeviceTarget/${BUILD_OPTIONS}.cmake")
 
@@ -61,7 +60,6 @@ target_compile_options(${TARGET_OPTIONS} INTERFACE
   -fmessage-length=0
   -fno-common
   -m64
-  $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>
 )
 
 if(COVERAGE)
@@ -94,7 +92,7 @@ if(COVERAGE)
 endif()
 
 if(GTEST)
-  target_link_libraries(${TARGET_OPTIONS} INTERFACE gmock gtest)
+  target_link_libraries(${TARGET_OPTIONS} INTERFACE GTest::gmock GTest::gtest)
 endif()
 
 # ====================================================
