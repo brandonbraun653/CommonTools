@@ -30,9 +30,9 @@ option(ASAN "Enables/disables the address sanitizer (Can't be run with Valgrind)
 option(GTEST "Enables GTest support" OFF)
 if(GTEST)
   message(STATUS "Enabled GTest")
-  set(Testing::REQUIRES_GTEST TRUE CACHE INTERNAL "" FORCE)
+  set(TESTING_REQUIRES_GTEST TRUE CACHE INTERNAL "" FORCE)
 else()
-  set(Testing::REQUIRES_GTEST FALSE CACHE INTERNAL "" FORCE)
+  set(TESTING_REQUIRES_GTEST FALSE CACHE INTERNAL "" FORCE)
 endif()
 
 # ====================================================
@@ -41,9 +41,9 @@ endif()
 option(GMOCK "Enables GMock support" OFF)
 if(GMOCK)
   message(STATUS "Enabled GMock")
-  set(Testing::REQUIRES_GMOCK TRUE CACHE INTERNAL "" FORCE)
+  set(TESTING_REQUIRES_GMOCK TRUE CACHE INTERNAL "" FORCE)
 else()
-  set(Testing::REQUIRES_GMOCK FALSE CACHE INTERNAL "" FORCE)
+  set(TESTING_REQUIRES_GMOCK FALSE CACHE INTERNAL "" FORCE)
 endif()
 
 # ====================================================
@@ -52,9 +52,9 @@ endif()
 option(CPPUTEST "Enabled CppUTest support" OFF)
 if(CPPUTEST)
   message(STATUS "Enabled CppUTest")
-  set(Testing::REQUIRES_CPPUTEST TRUE CACHE INTERNAL "" FORCE)
+  set(TESTING_REQUIRES_CPPUTEST TRUE CACHE INTERNAL "" FORCE)
 else()
-  set(Testing::REQUIRES_CPPUTEST FALSE CACHE INTERNAL "" FORCE)
+  set(TESTING_REQUIRES_CPPUTEST FALSE CACHE INTERNAL "" FORCE)
 endif()
 
 # ===================================================================
@@ -66,9 +66,9 @@ endif()
 option(NATIVE_THREADS "Enables native threading support" OFF)
 if(NATIVE_THREADS)
   message(STATUS "Enabled Native Threads")
-  set(Toolchain::REQUIRES_NATIVE_THREADS TRUE CACHE INTERNAL "" FORCE)
+  set(TOOLCHAIN_REQUIRES_NATIVE_THREADS TRUE CACHE INTERNAL "" FORCE)
 else()
-  set(Toolchain::REQUIRES_NATIVE_THREADS FALSE CACHE INTERNAL "" FORCE)
+  set(TOOLCHAIN_REQUIRES_NATIVE_THREADS FALSE CACHE INTERNAL "" FORCE)
 endif()
 
 # ====================================================
@@ -77,12 +77,12 @@ endif()
 option(FREERTOS_THREADS "Enables FreeRTOS threading support" OFF)
 if(FREERTOS_THREADS OR LIB_FREERTOS)
   message(STATUS "Enabled FreeRTOS Threads")
-  set(Toolchain::REQUIRES_FREERTOS_THREADS TRUE CACHE INTERNAL "" FORCE)
+  set(TOOLCHAIN_REQUIRES_FREERTOS_THREADS TRUE CACHE INTERNAL "" FORCE)
 
   # Enable for sanity as this could execute due to LIB_FREERTOS==ON
   set(FREERTOS_THREADS ON)
 else()
-  set(Toolchain::REQUIRES_FREERTOS_THREADS FALSE CACHE INTERNAL "" FORCE)
+  set(TOOLCHAIN_REQUIRES_FREERTOS_THREADS FALSE CACHE INTERNAL "" FORCE)
 endif()
 
 

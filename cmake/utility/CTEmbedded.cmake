@@ -2,13 +2,35 @@
 # Embedded Utilities
 #------------------------------------------------------------------------------
 cmake_minimum_required(VERSION 3.25.0)
+cmake_policy(VERSION 3.25)
+
+#------------------------------------------------------------------------------
+# Constants
+#------------------------------------------------------------------------------
+set(EMBEDDED_DEPS_REGEX "_deps")
+set(EMBEDDED_GENERATOR_EXPR_REGEX "^\\$<")
 
 #------------------------------------------------------------------------------
 # Function: add_elf2bin_dependency
 # Adds functionality to create ${target}.bin from ${target}.elf
+#
+# INTERFACE:
+#   target
+#       Base name of the ELF target (without .elf extension)
+#
+# REQUIREMENTS:
+#   Requires CMAKE_OBJCOPY to be available in the build environment
 #------------------------------------------------------------------------------
 function(add_elf2bin_dependency target)
-  add_custom_target(${target}.bin DEPENDS ${target}.elf)
+  if(NOT target)
+    message(FATAL_ERROR "add_elf2bin_dependency: target parameter is required")
+  endif()
+
+  if(NOT CMAKE_OBJCOPY)
+    message(FATAL_ERROR "add_elf2bin_dependency: CMAKE_OBJCOPY is not set")
+  endif()
+
+  add_custom_target(${target}.bin EXCLUDE_FROM_ALL DEPENDS ${target}.elf)
   add_custom_command(TARGET ${target}.bin
     COMMAND ${CMAKE_OBJCOPY} ARGS -O binary ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${target}.elf ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${target}.bin)
 endfunction()
@@ -16,9 +38,24 @@ endfunction()
 #------------------------------------------------------------------------------
 # Function: add_bin2lst_dependency
 # Adds functionality to create ${target}.lst from ${target}.bin
+#
+# INTERFACE:
+#   target
+#       Base name of the binary target (without .bin extension)
+#
+# REQUIREMENTS:
+#   Requires CMAKE_OBJDUMP to be available in the build environment
 #------------------------------------------------------------------------------
 function(add_bin2lst_dependency target)
-  add_custom_target(${target}.lst DEPENDS ${target}.bin)
+  if(NOT target)
+    message(FATAL_ERROR "add_bin2lst_dependency: target parameter is required")
+  endif()
+
+  if(NOT CMAKE_OBJDUMP)
+    message(FATAL_ERROR "add_bin2lst_dependency: CMAKE_OBJDUMP is not set")
+  endif()
+
+  add_custom_target(${target}.lst EXCLUDE_FROM_ALL DEPENDS ${target}.bin)
   add_custom_command(TARGET ${target}.lst
     COMMAND ${CMAKE_OBJDUMP} ARGS -D -b binary -marm ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${target}.bin > ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${target}.lst)
 endfunction()
@@ -27,14 +64,26 @@ endfunction()
 #------------------------------------------------------------------------------
 # Function: add_target_variants
 #
-# Creates rel/rel_dbg/dbg variants of a target. The generator func must accept
-# a single argument that specifies the build type. Useful for targets that
-# want to always build as a certain type.
+# Creates multiple build variants of a target. The generator function must accept
+# a single argument that specifies the build type variant suffix. Useful for
+# targets that want to always build with specific configurations.
 #
-# The promises made by this function (aka builds type <X>) is only held if the
-# generator function actually respects this.
+# INTERFACE:
+#   target_generator_func
+#       Function name that will be called with different variant suffixes:
+#       - "" (empty): Uses CMAKE_BUILD_TYPE for configuration
+#       - "_rel": Always uses release configuration
+#       - "_rel_dbg": Always uses release-with-debug configuration
+#       - "_dbg": Always uses debug configuration
+#
+# REQUIREMENTS:
+#   The generator function must properly handle the variant suffix parameter.
 #------------------------------------------------------------------------------
 function(add_target_variants target_generator_func)
+  if(NOT target_generator_func)
+    message(FATAL_ERROR "add_target_variants: target_generator_func parameter is required")
+  endif()
+
   cmake_language(CALL ${target_generator_func} "")       # This build varies with CMAKE_BUILD_TYPE
   cmake_language(CALL ${target_generator_func} _rel)     # Always project's settings for release build
   cmake_language(CALL ${target_generator_func} _rel_dbg) # Always project's settings for release with debug options
@@ -45,7 +94,7 @@ endfunction()
 #------------------------------------------------------------------------------
 # FUNCTION: gen_intf_lib
 #
-#   Generates an interface library. Originaly created to allow larger projects
+#   Generates an interface library. Originally created to allow larger projects
 #   to expose a target that includes all definitions and header file paths
 #   needed for a consuming project to integrate with. This way it's a bit
 #   easier to manage the dependencies of a project.
@@ -79,9 +128,20 @@ function(gen_intf_lib)
   cmake_parse_arguments(GEN_INTF_LIB "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
   #----------------------------------------------------------
+  # Validate required parameters
+  #----------------------------------------------------------
+  if(NOT GEN_INTF_LIB_TARGET)
+    message(FATAL_ERROR "gen_intf_lib: TARGET parameter is required")
+  endif()
+
+  if(NOT GEN_INTF_LIB_EXPORT_DIR)
+    message(FATAL_ERROR "gen_intf_lib: EXPORT_DIR parameter is required")
+  endif()
+
+  #----------------------------------------------------------
   # Build the library
   #----------------------------------------------------------
-  add_library(${GEN_INTF_LIB_TARGET} INTERFACE)
+  add_library(${GEN_INTF_LIB_TARGET} INTERFACE EXCLUDE_FROM_ALL)
 
   if(GEN_INTF_LIB_INTF_INCLUDES)
     target_include_directories(${GEN_INTF_LIB_TARGET} INTERFACE ${GEN_INTF_LIB_INTF_INCLUDES})
@@ -115,11 +175,11 @@ endfunction()
 #   SOURCES
 #       Source files to be compiled into the library
 #
-#   DEPENDS
+#   DEPENDENCIES
 #       Targets this static library depends on
 #
 #   PUB_INCLUDES
-#       Public includes that should be propogated to all dependents
+#       Public includes that should be propagated to all dependents
 #
 #   PUB_DEFINES
 #       Public preprocessor definitions that are propagated to all dependents
@@ -156,6 +216,21 @@ function(gen_static_lib_variants)
   cmake_parse_arguments(GEN_STATIC_LIB_VARIANTS "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
   #----------------------------------------------------------
+  # Validate required parameters
+  #----------------------------------------------------------
+  if(NOT GEN_STATIC_LIB_VARIANTS_TARGET)
+    message(FATAL_ERROR "gen_static_lib_variants: TARGET parameter is required")
+  endif()
+
+  if(NOT GEN_STATIC_LIB_VARIANTS_SOURCES)
+    message(FATAL_ERROR "gen_static_lib_variants: SOURCES parameter is required")
+  endif()
+
+  if(NOT GEN_STATIC_LIB_VARIANTS_EXPORT_DIR)
+    message(FATAL_ERROR "gen_static_lib_variants: EXPORT_DIR parameter is required")
+  endif()
+
+  #----------------------------------------------------------
   # Generator function to build a static library
   #----------------------------------------------------------
   function(build_${GEN_STATIC_LIB_VARIANTS_TARGET} VARIANT)
@@ -163,12 +238,11 @@ function(gen_static_lib_variants)
     # The name your project should reference
     #----------------------------------------------------------
     set(lib_var_name "${GEN_STATIC_LIB_VARIANTS_TARGET}${VARIANT}")
-    # message("Generating target: ${lib_var_name}")
 
     #----------------------------------------------------------
-    # Create the interface library with the desired properties
+    # Create the static library with the desired properties
     #----------------------------------------------------------
-    add_library(${lib_var_name} STATIC ${GEN_STATIC_LIB_VARIANTS_SOURCES})
+    add_library(${lib_var_name} STATIC EXCLUDE_FROM_ALL ${GEN_STATIC_LIB_VARIANTS_SOURCES})
 
     # Include Paths
     if(GEN_STATIC_LIB_VARIANTS_PRV_INCLUDES)
@@ -246,7 +320,7 @@ endfunction() #gen_static_lib_variants
 #       the targets generated by this function.
 #
 # REQUIREMENTS:
-#   All librarys in the LIBS argument must have generated named variants as
+#   All libraries in the LIBRARIES argument must have generated named variants as
 #   well, or else the function won't know what to reference.
 #------------------------------------------------------------------------------
 function(gen_intf_lib_variants)
@@ -259,6 +333,21 @@ function(gen_intf_lib_variants)
   cmake_parse_arguments(GEN_INTF_LIB_VARIANTS "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
   #----------------------------------------------------------
+  # Validate required parameters
+  #----------------------------------------------------------
+  if(NOT GEN_INTF_LIB_VARIANTS_TARGET)
+    message(FATAL_ERROR "gen_intf_lib_variants: TARGET parameter is required")
+  endif()
+
+  if(NOT GEN_INTF_LIB_VARIANTS_LIBRARIES)
+    message(FATAL_ERROR "gen_intf_lib_variants: LIBRARIES parameter is required")
+  endif()
+
+  if(NOT GEN_INTF_LIB_VARIANTS_EXPORT_DIR)
+    message(FATAL_ERROR "gen_intf_lib_variants: EXPORT_DIR parameter is required")
+  endif()
+
+  #----------------------------------------------------------
   # Generator function to build an interface library
   #----------------------------------------------------------
   function(build_${GEN_INTF_LIB_VARIANTS_TARGET} VARIANT)
@@ -266,7 +355,6 @@ function(gen_intf_lib_variants)
     # The name your project should reference
     #----------------------------------------------------------
     set(lib_var_name "${GEN_INTF_LIB_VARIANTS_TARGET}${VARIANT}")
-    # message("Generating target: ${lib_var_name}")
 
     #----------------------------------------------------------
     # Add the variant flag to each library target
@@ -279,7 +367,7 @@ function(gen_intf_lib_variants)
     #----------------------------------------------------------
     # Create the interface library with the desired properties
     #----------------------------------------------------------
-    add_library(${lib_var_name} INTERFACE)
+    add_library(${lib_var_name} INTERFACE EXCLUDE_FROM_ALL)
     target_link_libraries(${lib_var_name} INTERFACE "${renamed_libs${VARIANT}}")
     export_target_safely(${lib_var_name} "${GEN_INTF_LIB_VARIANTS_EXPORT_DIR}/${lib_var_name}.cmake")
   endfunction()
@@ -306,6 +394,14 @@ endfunction() #gen_intf_lib_variants
 #
 #------------------------------------------------------------------------------
 function(export_target_safely TARGET_NAME EXPORT_FILE)
+  if(NOT TARGET_NAME)
+    message(FATAL_ERROR "export_target_safely: TARGET_NAME parameter is required")
+  endif()
+
+  if(NOT EXPORT_FILE)
+    message(FATAL_ERROR "export_target_safely: EXPORT_FILE parameter is required")
+  endif()
+
   # Check if target exists
   if(NOT TARGET ${TARGET_NAME})
     message(WARNING "Cannot export non-existent target: ${TARGET_NAME}")
@@ -328,7 +424,7 @@ function(export_target_safely TARGET_NAME EXPORT_FILE)
   if(linked_libs)
     foreach(lib ${linked_libs})
       # Skip keywords and generator expressions
-      if(lib MATCHES "^\\$<" OR lib MATCHES "^-" OR lib MATCHES "^PRIVATE$" OR lib MATCHES "^INTERFACE$")
+      if(lib MATCHES ${EMBEDDED_GENERATOR_EXPR_REGEX} OR lib MATCHES "^-" OR lib MATCHES "^PRIVATE$" OR lib MATCHES "^INTERFACE$")
         continue()
       endif()
 
@@ -336,7 +432,7 @@ function(export_target_safely TARGET_NAME EXPORT_FILE)
       if(TARGET ${lib})
         get_target_property(lib_source ${lib} SOURCE_DIR)
         # If it's from FetchContent/_deps, it's likely not exportable
-        if(lib_source AND lib_source MATCHES "_deps")
+        if(lib_source AND lib_source MATCHES ${EMBEDDED_DEPS_REGEX})
           set(non_exportable_found TRUE)
           message(STATUS "Target ${TARGET_NAME} depends on non-exportable target ${lib} from FetchContent - skipping export")
           break()
