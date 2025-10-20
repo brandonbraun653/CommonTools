@@ -12,25 +12,22 @@
 # =============================================================================
 
 # Get the directory containing this bootstrap file
-get_filename_component(_COMMON_TOOLS_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" DIRECTORY)
+SET(COMMON_TOOL_ROOT "${CMAKE_CURRENT_LIST_DIR}/../")
 
 # Add all CommonTools directories to CMAKE_MODULE_PATH
 # This allows find_package() and include() to find our custom modules
 list(APPEND CMAKE_MODULE_PATH
-    "${_COMMON_TOOLS_CMAKE_DIR}/modules"      # Custom CMake modules (Find*.cmake, etc.)
-    "${_COMMON_TOOLS_CMAKE_DIR}/utility"      # Utility functions and macros
-    "${_COMMON_TOOLS_CMAKE_DIR}/options"      # Project option configurations
-    "${_COMMON_TOOLS_CMAKE_DIR}/toolchains"   # Custom toolchain files
+    "${CMAKE_CURRENT_LIST_DIR}/modules"      # Custom CMake modules (Find*.cmake, etc.)
+    "${CMAKE_CURRENT_LIST_DIR}/utility"      # Utility functions and macros
+    "${CMAKE_CURRENT_LIST_DIR}/options"      # Project option configurations
+    "${CMAKE_CURRENT_LIST_DIR}/toolchains"   # Custom toolchain files
 )
 
 # Also add to CMAKE_TOOLCHAIN_PATH for toolchain discovery
 # (CMAKE_MODULE_PATH is also searched, but this makes it explicit)
 list(APPEND CMAKE_TOOLCHAIN_PATH
-    "${_COMMON_TOOLS_CMAKE_DIR}/toolchains"
+    "${CMAKE_CURRENT_LIST_DIR}/toolchains"
 )
 
 # Detect project level configuration options
-include("${_COMMON_TOOLS_CMAKE_DIR}/options/common.cmake")
-
-# Clean up temporary variable
-unset(_COMMON_TOOLS_CMAKE_DIR)
+include("${CMAKE_CURRENT_LIST_DIR}/options/common.cmake")

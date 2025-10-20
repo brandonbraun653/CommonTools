@@ -7,12 +7,6 @@
 #
 # 2020 | Brandon Braun | brandonbraun653@gmail.com
 # =============================================================================
-# ====================================================
-# Validate requirements of this module
-# ====================================================
-if(NOT COMMON_TOOL_ROOT)
-message(FATAL_ERROR "Path to the CommonTool root must be defined")
-endif()
 
 # ====================================================
 # Build Types

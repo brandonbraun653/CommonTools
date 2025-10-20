@@ -5,12 +5,6 @@ cmake_minimum_required(VERSION 3.25.0)
 cmake_policy(VERSION 3.25)
 
 #------------------------------------------------------------------------------
-# Constants
-#------------------------------------------------------------------------------
-set(EMBEDDED_DEPS_REGEX "_deps")
-set(EMBEDDED_GENERATOR_EXPR_REGEX "^\\$<")
-
-#------------------------------------------------------------------------------
 # Function: add_elf2bin_dependency
 # Adds functionality to create ${target}.bin from ${target}.elf
 #
@@ -424,7 +418,7 @@ function(export_target_safely TARGET_NAME EXPORT_FILE)
   if(linked_libs)
     foreach(lib ${linked_libs})
       # Skip keywords and generator expressions
-      if(lib MATCHES ${EMBEDDED_GENERATOR_EXPR_REGEX} OR lib MATCHES "^-" OR lib MATCHES "^PRIVATE$" OR lib MATCHES "^INTERFACE$")
+      if("${lib}" MATCHES "^\\\$<" OR "${lib}" MATCHES "^-" OR "${lib}" MATCHES "^PRIVATE$" OR "${lib}" MATCHES "^INTERFACE$")
         continue()
       endif()
 
@@ -432,7 +426,7 @@ function(export_target_safely TARGET_NAME EXPORT_FILE)
       if(TARGET ${lib})
         get_target_property(lib_source ${lib} SOURCE_DIR)
         # If it's from FetchContent/_deps, it's likely not exportable
-        if(lib_source AND lib_source MATCHES ${EMBEDDED_DEPS_REGEX})
+        if(lib_source AND "${lib_source}" MATCHES "_deps")
           set(non_exportable_found TRUE)
           message(STATUS "Target ${TARGET_NAME} depends on non-exportable target ${lib} from FetchContent - skipping export")
           break()
