@@ -11,6 +11,11 @@
 # find_package() or include() calls that depend on the CommonTools modules.
 # =============================================================================
 
+# Set common output directory patterns
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG "${PROJECT_BINARY_DIR}/bin")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${PROJECT_BINARY_DIR}/bin")
+
 # Get the directory containing this bootstrap file
 SET(COMMON_TOOL_ROOT "${CMAKE_CURRENT_LIST_DIR}/../")
 
